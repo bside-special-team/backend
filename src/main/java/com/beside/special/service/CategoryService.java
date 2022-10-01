@@ -14,6 +14,12 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
+    @Transactional(readOnly = true)
+    public Category findByCode(String code) {
+        return categoryRepository.findCategoryByCode(code)
+            .orElseThrow(() -> new IllegalArgumentException(String.format("존재하지 않는 category code입니다. %s", code)));
+    }
+
     @Transactional
     public Category create(CreateCategoryDto createCategoryDto) {
         if (categoryRepository.existsByCode(createCategoryDto.getCode())) {

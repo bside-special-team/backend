@@ -1,5 +1,6 @@
 package com.beside.special.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.annotation.Id;
@@ -31,8 +32,10 @@ public class Place extends BaseEntity {
 
     private Integer visitCount;
 
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime bestStartTime;
 
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime bestEndTime;
 
     private List<String> hashTags;

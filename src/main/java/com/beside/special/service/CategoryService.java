@@ -6,6 +6,8 @@ import com.beside.special.service.dto.CreateCategoryDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class CategoryService {
     private final CategoryRepository categoryRepository;
@@ -29,5 +31,10 @@ public class CategoryService {
         Category category = new Category(createCategoryDto.getCode(), createCategoryDto.getName());
 
         return categoryRepository.save(category);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Category> findAll() {
+        return categoryRepository.findAll();
     }
 }

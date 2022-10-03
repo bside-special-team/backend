@@ -31,4 +31,3 @@ docker-compose up -d
 java -jar build/libs/special-0.0.1-SNAPSHOT.jar
 ```
 
-jenkins

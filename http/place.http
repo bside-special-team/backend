@@ -1,0 +1,44 @@
+### Place 생성
+POST http://localhost:8080/api/v1/places
+Content-Type: application/json
+
+{
+  "categoryCode": "PHOTO_SPOT",
+  "name": "우리집 뒷동산",
+  "coordinate": {
+    "longitude": 27.12312312,
+    "latitude": 123.12312312
+  },
+  "description": "우리집 뒷동산 진짜 레알 사진찍기 개좋음",
+  "bestStartTime": "20:30",
+  "bestEndTime": "23:30",
+  "hashTags": [
+    "미쳤음",
+    "레알개 쩔어"
+  ]
+}
+### Place 생성
+POST http://localhost:8080/api/v1/places
+Content-Type: application/json
+
+{
+  "categoryCode": "PHOTO_SPOT",
+  "name": "우리집 뒷동산",
+  "coordinate": {
+    "longitude": 27.12312312,
+    "latitude": 123.12312312
+  },
+  "description": "우리집 뒷동산 진짜 레알 사진찍기 개좋음",
+  "bestStartTime": "20:30",
+  "bestEndTime": "23:30",
+  "hashTags": [
+    "미쳤음",
+    "레알개 쩔어"
+  ],
+  "visitCount": 100,
+  "season": "SPRING"
+}
+
+### Place 위경도 기반 조회
+GET {{host}}/api/v1/places/coordinate?fromLatitude=120.12312312&fromLongitude=26.12312312&toLatitude=124.12312312&toLongitude=27.12412312
+Content-Type: application/json

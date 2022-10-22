@@ -1,0 +1,63 @@
+
+### Category 생성
+POST {{host}}/api/v1/categories
+Content-Type: application/json
+
+{
+  "code": "FOOD&CAFE",
+  "name": "음식점/카페"
+}
+
+### Category 생성
+POST {{host}}/api/v1/categories
+Content-Type: application/json
+
+{
+  "code": "SHOPPING",
+  "name": "쇼핑몰/시장"
+}
+
+### Category 생성
+POST {{host}}/api/v1/categories
+Content-Type: application/json
+
+{
+  "code": "PARK",
+  "name": "공원"
+}
+
+### Category 생성
+POST {{host}}/api/v1/categories
+Content-Type: application/json
+
+{
+  "code": "PHOTO_SPOT",
+  "name": "포토스팟"
+}
+
+### Category 생성
+POST {{host}}/api/v1/categories
+Content-Type: application/json
+
+{
+  "code": "WORKSPACE",
+  "name": "워크스페이스"
+}
+
+### Category 생성
+POST {{host}}/api/v1/categories
+Content-Type: application/json
+
+{
+  "code": "EXERCISE",
+  "name": "산책/운동/등산"
+}
+
+### Category 생성
+POST {{host}}/api/v1/categories
+Content-Type: application/json
+
+{
+  "code": "VIEW",
+  "name": "뷰맛집"
+}

@@ -7,15 +7,7 @@ spring:
       username: special
       password: special
       database: special
-
-special:
-  oauth2:
-    client:
-      registration:
-        kakao:
-          client-id:
-          redirect-uri: http://localhost:8080/api/v1/login/oauth2/code
-        google:
-          client-id:
-          client-secret:
-          redirect-uri: http://localhost:8080/api/v1/login/oauth2/code
+  config:
+    import:
+      - auth.yml
+      - s3_info.yml

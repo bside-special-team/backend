@@ -7,3 +7,7 @@ spring:
       username: special
       password: special
       database: special
+  config:
+    import:
+      - backend-config/auth.yml
+      - backend-config/s3_info.yml

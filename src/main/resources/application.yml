@@ -9,5 +9,5 @@ spring:
       database: special
   config:
     import:
-      - auth.yml
-      - s3_info.yml
+      - backend-config/auth.yml
+      - backend-config/s3_info.yml

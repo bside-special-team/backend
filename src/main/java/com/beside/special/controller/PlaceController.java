@@ -7,17 +7,16 @@ import com.beside.special.domain.PlaceType;
 import com.beside.special.domain.dto.FindPlaceResponse;
 import com.beside.special.service.PlaceService;
 import com.beside.special.service.dto.CreatePlaceDto;
+import com.beside.special.service.dto.VisitPlaceDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
@@ -67,12 +66,25 @@ public class PlaceController {
     }
 
     @Operation(summary = "히든 플레이스 등록", responses = {
-        @ApiResponse(responseCode = "201", description = "조회 성공"),
+        @ApiResponse(responseCode = "201", description = "등록 성공"),
         @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Place create(@RequestBody @Valid CreatePlaceDto createPlaceDto) {
-        return placeService.create(createPlaceDto);
+    public ResponseEntity create(@RequestBody @Valid CreatePlaceDto createPlaceDto){
+        Place place = placeService.create(createPlaceDto);
+        placeService.visit(new VisitPlaceDto(place.getId(), createPlaceDto.getUserId()));
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(place);
+    }
+
+    @Operation(summary = "플레이스 방문", responses = {
+            @ApiResponse(responseCode = "201", description = "등록 성공"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    @PostMapping("/check-in")
+    public ResponseEntity visitPlace(@RequestBody VisitPlaceDto visitPlaceDto){
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(placeService.visit(visitPlaceDto));
     }
 }

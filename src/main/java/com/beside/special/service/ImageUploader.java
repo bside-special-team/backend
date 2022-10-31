@@ -32,7 +32,10 @@ public class ImageUploader {
         List<String> saveFileNames = new ArrayList<>();
 
         for (MultipartFile file : images) {
-            if (file.isEmpty() | !isWebp(file)) {
+            if (file.isEmpty()) {
+                throw new IllegalArgumentException("빈 파일입니다.");
+            }
+            if (!isImage(file)) {
                 throw new RuntimeException("Image 생성 오류");
             }
             String fileKey = targetDirectory + "/" + getImageKey(file);
@@ -63,13 +66,10 @@ public class ImageUploader {
     }
 
     // MultiFile Image인지 확인
-    private boolean isWebp(MultipartFile multipartFile) {
+    private boolean isImage(MultipartFile multipartFile) {
         String[] tokens = multipartFile.getContentType().split("/");
-        if(tokens[0].equals("image")){
+        if (!tokens[0].equals("image")) {
             throw new RuntimeException("잘못된 파일 타입");
-        }
-        else if (tokens[1].equals("webp")) {
-            throw new RuntimeException("잘못된 이미지 확장자");
         }
         return true;
     }

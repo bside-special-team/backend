@@ -72,7 +72,7 @@ public class PlaceController {
     @PostMapping
     public ResponseEntity create(@RequestBody @Valid CreatePlaceDto createPlaceDto){
         Place place = placeService.create(createPlaceDto);
-        placeService.visit(new VisitPlaceDto(place.getId(), createPlaceDto.getUserId()));
+        placeService.visit(new VisitPlaceDto(createPlaceDto.getUserId(), place.getId()));
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(place);

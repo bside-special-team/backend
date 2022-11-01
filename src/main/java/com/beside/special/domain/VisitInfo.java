@@ -27,4 +27,9 @@ public class VisitInfo{
         }
         return ( ((VisitInfo) obj).id.equals(this.id));
     }
+
+    @Override
+    public int hashCode(){
+        return (id).hashCode();
+    }
 }

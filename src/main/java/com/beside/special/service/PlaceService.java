@@ -6,6 +6,8 @@ import com.beside.special.service.dto.VisitPlaceDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 public class PlaceService {
     private final PlaceRepository placeRepository;
@@ -29,8 +31,6 @@ public class PlaceService {
                 createPlaceDto.getHashTags()
         );
 
-        placeRepository.save(place);
-
         return placeRepository.save(place);
     }
 
@@ -42,25 +42,26 @@ public class PlaceService {
         User user = userRepository.findById(visitPlaceDto.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지않는 User"));
 
+        for (VisitInfo userVisitPlace : user.getVisitInfos()) {
+            if (userVisitPlace.getId().equals(place.getId())) {
+                throw new IllegalArgumentException("이전 방문 내역 [ " +userVisitPlace.getVisitedAt() + " ]");
+            }
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+
         VisitInfo placeVisitInfo = VisitInfo.builder()
                 .id(user.getId())
+                .visitedAt(now)
                 .build();
-
-        System.out.println(placeVisitInfo.getId() + " / " + placeVisitInfo.getVisitedAt());
 
         VisitInfo userVisitInfo = VisitInfo.builder()
                 .id(place.getId())
+                .visitedAt(now)
                 .build();
-
-        System.out.println(userVisitInfo.getId() + " / " + userVisitInfo.getVisitedAt());
-
-        if (user.getVisitInfos().contains(userVisitInfo) || place.getVisitInfos().contains(placeVisitInfo) ){
-            throw new IllegalArgumentException("이미 방문한 장소입니다.");
-        }
 
         user.getVisitInfos().add(userVisitInfo);
         place.getVisitInfos().add(placeVisitInfo);
-
         place.setVisitCount(place.getVisitCount() + 1);
 
         placeRepository.save(place);

@@ -1,3 +1,0 @@
-[submodule "src/main/resources/backend-config"]
-	path = src/main/resources/backend-config
-	url = https://github.com/bside-special-team/backend-config

@@ -23,6 +23,10 @@ public class LoginController {
         this.kaKaoAuthClient = kaKaoAuthClient;
     }
 
+    @Operation(summary = "authorization_code기반 로그인 oauth(앱 사용 X)", responses = {
+        @ApiResponse(responseCode = "200", description = "조회 성공"),
+        @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
     @GetMapping("code")
     public TokenResponse loginByCode(String code) throws JwkException {
         String idToken = kaKaoAuthClient.getIdTokenByCode(code);

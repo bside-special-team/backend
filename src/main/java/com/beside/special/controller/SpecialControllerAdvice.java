@@ -1,5 +1,7 @@
 package com.beside.special.controller;
 
+import com.beside.special.config.web.ResponseError;
+import com.beside.special.exception.AuthorizationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
@@ -23,13 +25,17 @@ public class SpecialControllerAdvice extends ResponseEntityExceptionHandler {
         String message = ex.getAllErrors().stream()
             .map(DefaultMessageSourceResolvable::getDefaultMessage)
             .collect(Collectors.joining("\n"));
-        return ResponseEntity.badRequest().body(message);
+        return ResponseEntity.badRequest().body(ResponseError.of(message));
     }
 
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<ResponseError> unAuthorizationException(AuthorizationException exception) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseError.of(exception.getMessage()));
+    }
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleException(Exception exception) {
+    public ResponseEntity<ResponseError> handleException(Exception exception) {
         log.error("unknown exception throws {}", exception.getMessage(), exception);
 
-        return ResponseEntity.internalServerError().body(exception.getMessage());
+        return ResponseEntity.internalServerError().body(ResponseError.of(exception.getMessage()));
     }
 }

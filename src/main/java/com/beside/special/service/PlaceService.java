@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 
 @Service
 public class PlaceService {
+    private static final int LAND_MARK_RECOMMENDATION = 2;
+
     private final PlaceRepository placeRepository;
     private final UserRepository userRepository;
 
@@ -44,7 +46,7 @@ public class PlaceService {
 
         for (VisitInfo userVisitPlace : user.getVisitInfos()) {
             if (userVisitPlace.getId().equals(place.getId())) {
-                throw new IllegalArgumentException("이전 방문 내역 [ " +userVisitPlace.getVisitedAt() + " ]");
+                throw new IllegalArgumentException("이전 방문 내역 [ " + userVisitPlace.getVisitedAt() + " ]");
             }
         }
 
@@ -68,5 +70,31 @@ public class PlaceService {
         userRepository.save(user);
 
         return place;
+    }
+
+    @Transactional
+    public RecommendationResponse recommend(VisitPlaceDto visitPlaceDto) {
+        Place place = placeRepository.findById(visitPlaceDto.getPlaceId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지않는 Place"));
+
+        User user = userRepository.findById(visitPlaceDto.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지않는 User"));
+
+        if (user.getRecPlaces().contains(place.getId())) {
+            throw new IllegalArgumentException("이미 추천한 장소입니다.");
+        }
+
+        user.getRecPlaces().add(place.getId());
+        userRepository.save(user);
+
+        place.getRecommendUsers().add(user.getId());
+        if (place.getPlaceType() == PlaceType.HIDDEN && place.getRecommendUsers().size() >= LAND_MARK_RECOMMENDATION) {
+            place.setPlaceType(PlaceType.LAND_MARK);
+            placeRepository.save(place);
+            return RecommendationResponse.UPGRADE;
+        } else {
+            placeRepository.save(place);
+            return RecommendationResponse.SUCCESS;
+        }
     }
 }

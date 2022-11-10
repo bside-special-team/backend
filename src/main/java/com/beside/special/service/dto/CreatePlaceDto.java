@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -28,7 +27,7 @@ public class CreatePlaceDto {
     @Size(max = 10, message = "플레이스명은 최대 10자 입니다.")
     private String name;
 
-    @Schema(description = "이미지(Url) List", required = true)
+    @Schema(description = "이미지(UUID) List", required = true)
     private List<String> images;
 
     @Schema(description = "해시태그 List")

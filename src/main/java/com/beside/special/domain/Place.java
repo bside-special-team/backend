@@ -38,7 +38,9 @@ public class Place extends BaseEntity {
 
     private Set<VisitInfo> visitInfos;
 
-    public Place(Coordinate coordinate, String name,  User writer,
+    private Set<String> recommendUsers;
+
+    public Place(Coordinate coordinate, String name, User writer,
                  List<String> imageUrls, List<String> hashTags) {
         // validate(coordinate, name, hashTags);
         // TODO 사진 validation

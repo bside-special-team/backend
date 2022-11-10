@@ -30,18 +30,6 @@ public class PlaceController {
         this.placeRepository = placeRepository;
     }
 
-    @Operation(summary = "플레이스 상세 조회", responses = {
-            @ApiResponse(responseCode = "200", description = "조회 성공"),
-            @ApiResponse(responseCode = "500", description = "서버 에러")
-    })
-    @GetMapping("/{placeID}")
-    public ResponseEntity<Place> findById(
-            @PathVariable String placeID
-    ) {
-
-        return new FindPlaceResponse(hiddenPlaces, landMarkPlaces);
-    }
-
     @Operation(summary = "플레이스 전체 조회", responses = {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
@@ -57,7 +45,7 @@ public class PlaceController {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    @GetMapping("/coordinate")
+    @GetMapping("coordinate")
     public FindPlaceResponse findByCoordinate(
             @Parameter(description = "시작 위도", required = true, example = "120.12312312") BigDecimal fromLatitude,
             @Parameter(description = "시작 경도", required = true, example = "20.12312312") BigDecimal fromLongitude,

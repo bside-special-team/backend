@@ -30,6 +30,18 @@ public class PlaceController {
         this.placeRepository = placeRepository;
     }
 
+    @Operation(summary = "플레이스 상세 조회", responses = {
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    @GetMapping("/{placeID}")
+    public ResponseEntity<Place> findById(
+            @PathVariable String placeID
+    ) {
+
+        return new FindPlaceResponse(hiddenPlaces, landMarkPlaces);
+    }
+
     @Operation(summary = "플레이스 전체 조회", responses = {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "500", description = "서버 에러")

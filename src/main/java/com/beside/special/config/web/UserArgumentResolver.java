@@ -3,16 +3,25 @@ package com.beside.special.config.web;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.beside.special.config.SpecialJWTConfiguration;
 import com.beside.special.domain.AuthUser;
 import com.beside.special.domain.dto.UserDto;
 import com.beside.special.exception.AuthorizationException;
 import org.springframework.core.MethodParameter;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+@Component
 public class UserArgumentResolver implements HandlerMethodArgumentResolver {
+    private final SpecialJWTConfiguration specialJWTConfiguration;
+
+    public UserArgumentResolver(SpecialJWTConfiguration specialJWTConfiguration) {
+        this.specialJWTConfiguration = specialJWTConfiguration;
+    }
+
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(AuthUser.class) &&
@@ -33,7 +42,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
             throw new AuthorizationException("인증정보가 없습니다!");
         }
 
-        DecodedJWT jwt = JWT.require(Algorithm.HMAC256("qwelrkjasdlfvkjasd")).build()
+        DecodedJWT jwt = JWT.require(Algorithm.HMAC256(specialJWTConfiguration.getSecret())).build()
             .verify(token);
 
         return new UserDto(

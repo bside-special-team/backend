@@ -17,9 +17,14 @@ public class UserService {
 
     @Transactional
     public User findOrCreateByProvider(AuthProvider provider, DecodedJWT jwt) {
-        return userRepository.findByAuthProviderAndSubject(provider, jwt.getSubject())
+        return findOrCreateByProvider(provider, jwt.getSubject(), jwt.getClaim("email").asString());
+    }
+
+    @Transactional
+    public User findOrCreateByProvider(AuthProvider provider, String subject, String email) {
+        return userRepository.findByAuthProviderAndSubject(provider, subject)
             .orElseGet(() -> userRepository.save(
-                new User(provider, jwt.getSubject(), jwt.getClaim("email").asString(), null)
+                new User(provider, subject, email, null)
             ));
     }
 }

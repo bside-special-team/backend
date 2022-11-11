@@ -8,8 +8,14 @@ import java.util.List;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+    private final UserArgumentResolver userArgumentResolver;
+
+    public WebMvcConfig(UserArgumentResolver userArgumentResolver) {
+        this.userArgumentResolver = userArgumentResolver;
+    }
+
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new UserArgumentResolver());
+        resolvers.add(userArgumentResolver);
     }
 }

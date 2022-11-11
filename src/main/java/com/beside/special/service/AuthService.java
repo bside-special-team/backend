@@ -24,11 +24,14 @@ import java.util.concurrent.TimeUnit;
 public class AuthService {
     private final UserService userService;
     private final SpecialOAuth2ClientProperties specialOAuth2ClientProperties;
+    private final AccessTokenService accessTokenService;
 
     public AuthService(UserService userService,
-                       SpecialOAuth2ClientProperties specialOAuth2ClientProperties) {
+                       SpecialOAuth2ClientProperties specialOAuth2ClientProperties,
+                       AccessTokenService accessTokenService) {
         this.userService = userService;
         this.specialOAuth2ClientProperties = specialOAuth2ClientProperties;
+        this.accessTokenService = accessTokenService;
     }
 
     public String generateAccessToken(String idToken) throws JwkException {
@@ -36,14 +39,7 @@ public class AuthService {
         AuthProvider provider = AuthProvider.findByIssuer(jwt.getIssuer());
         User user = userService.findOrCreateByProvider(provider, jwt);
 
-        return JWT.create()
-            .withClaim("provider", user.getAuthProvider().name())
-            .withClaim("userId", user.getId())
-            .withClaim("email", user.getEmail())
-            .withClaim("nickName", user.getNickName())
-            .withExpiresAt(new Date(System.currentTimeMillis() + (1800 * 1000)))
-            //TODO secret 변경
-            .sign(Algorithm.HMAC256("qwelrkjasdlfvkjasd"));
+        return accessTokenService.generate(user);
     }
 
     private DecodedJWT verify(String token) throws JwkException {

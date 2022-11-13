@@ -14,6 +14,8 @@ import com.beside.special.domain.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
+import java.net.URL;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Date;
 import java.util.Objects;
@@ -52,7 +54,8 @@ public class AuthService {
         if (!Objects.equals(idToken.getIssuer(), authProvider.getIssuer())) {
             throw new IllegalArgumentException("issuer 불일치");
         }
-
+        //553241441268-mm92utt2laasq5bvbeq5r6s4b7lu8d7j.apps.googleusercontent.com
+        //553241441268-206n2hpirniitnp90tm7j4qm1pkludmh.apps.googleusercontent.com
         // client_id 검증
         if (!idToken.getAudience().contains(specialRegistration.getClientId())) {
             throw new IllegalArgumentException("appKey 불일치");
@@ -64,9 +67,7 @@ public class AuthService {
         }
 
         //서명 검증
-        JwkProvider provider = new JwkProviderBuilder(authProvider.getIssuer())
-            .cached(10, 7, TimeUnit.DAYS)
-            .build();
+        JwkProvider provider = authProvider.getProvider();
 
         Jwk jwk = provider.get(idToken.getKeyId());
         Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) jwk.getPublicKey(), null);

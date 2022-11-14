@@ -6,6 +6,8 @@ import com.amazonaws.services.s3.model.*;
 import com.beside.special.domain.Image;
 import com.beside.special.domain.ImageRepository;
 
+import com.beside.special.exception.BadRequestException;
+import com.beside.special.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +29,7 @@ public class ImageService {
         this.imageRepository = imageRepository;
         this.s3 = s3;
     }
+
     // 이미지 업로드 ( MultiPartFile, 저장 디렉토리 ) TODO File Size 처리 (제한?)
     public List<String> uploadImage(List<MultipartFile> images, String targetDirectory) {
         List<String> imageUuids = new ArrayList<>();
@@ -43,7 +46,7 @@ public class ImageService {
                         new ObjectMetadata()));
 
             } catch (SdkClientException | IOException e) {
-                throw new SdkClientException("S3 Upload 중 오류 발생");
+                throw new RuntimeException("S3 Upload 중 오류 발생" + e.getMessage());
             }
 
             Image image = Image.builder()
@@ -60,7 +63,7 @@ public class ImageService {
 
     public ByteArrayOutputStream getImage(String uuid) {
         Image image = imageRepository.findByUuid(uuid)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 파일입니다."));
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 파일입니다."));
 
         S3Object s3Object = s3.getObject(BUCKET_NAME, image.getFileKey());
 
@@ -74,14 +77,14 @@ public class ImageService {
             }
             return outputStream;
         } catch (IOException e) {
-            throw new IllegalArgumentException("존재하지 않는 파일입니다.");
+            throw new RuntimeException("존재하지 않는 파일입니다.");
         }
     }
 
     public void deleteImage(List<String> uuids) {
         for (String uuid : uuids) {
             Image image = imageRepository.findByUuid(uuid)
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 파일입니다."));
+                    .orElseThrow(() -> new NotFoundException("존재하지 않는 파일입니다."));
 
             s3.deleteObject(BUCKET_NAME, image.getFileKey());
         }
@@ -90,11 +93,11 @@ public class ImageService {
     // MultiFile Image 검증
     private void validateImage(MultipartFile multipartFile) {
         if (multipartFile.isEmpty()) {
-            throw new IllegalArgumentException("빈 파일입니다.");
+            throw new BadRequestException("빈 파일입니다.");
         }
         String[] tokens = multipartFile.getContentType().split("/");
         if (!tokens[0].equals("image")) {
-            throw new IllegalArgumentException("잘못된 파일 타입입니다.");
+            throw new BadRequestException("잘못된 파일 타입입니다.");
         }
     }
 
@@ -113,7 +116,7 @@ public class ImageService {
                 }
             }
         } catch (SdkClientException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
         return false;
     }

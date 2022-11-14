@@ -1,6 +1,8 @@
 package com.beside.special.service;
 
 import com.beside.special.domain.*;
+import com.beside.special.exception.BadRequestException;
+import com.beside.special.exception.NotFoundException;
 import com.beside.special.service.dto.CreatePlaceDto;
 import com.beside.special.service.dto.VisitPlaceDto;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,7 @@ public class PlaceService {
     @Transactional
     public Place create(CreatePlaceDto createPlaceDto) {
         User writer = userRepository.findById(createPlaceDto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지않는 User"));
+                .orElseThrow(() -> new NotFoundException("존재하지않는 User"));
 
         Place place = new Place(
                 createPlaceDto.getCoordinate(),
@@ -39,14 +41,14 @@ public class PlaceService {
     @Transactional
     public Place visit(VisitPlaceDto visitPlaceDto) {
         Place place = placeRepository.findById(visitPlaceDto.getPlaceId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지않는 Place"));
+                .orElseThrow(() -> new NotFoundException("존재하지않는 Place"));
 
         User user = userRepository.findById(visitPlaceDto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지않는 User"));
+                .orElseThrow(() -> new NotFoundException("존재하지않는 User"));
 
         for (VisitInfo userVisitPlace : user.getVisitInfos()) {
             if (userVisitPlace.getId().equals(place.getId())) {
-                throw new IllegalArgumentException("이전 방문 내역 [ " + userVisitPlace.getVisitedAt() + " ]");
+                throw new BadRequestException("이전 방문 내역 [ " + userVisitPlace.getVisitedAt() + " ]");
             }
         }
 
@@ -75,13 +77,13 @@ public class PlaceService {
     @Transactional
     public RecommendationResponse recommend(VisitPlaceDto visitPlaceDto) {
         Place place = placeRepository.findById(visitPlaceDto.getPlaceId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지않는 Place"));
+                .orElseThrow(() -> new NotFoundException("존재하지않는 Place"));
 
         User user = userRepository.findById(visitPlaceDto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지않는 User"));
+                .orElseThrow(() -> new NotFoundException("존재하지않는 User"));
 
         if (user.getRecPlaces().contains(place.getId())) {
-            throw new IllegalArgumentException("이미 추천한 장소입니다.");
+            throw new BadRequestException("이미 추천한 장소입니다.");
         }
 
         user.getRecPlaces().add(place.getId());

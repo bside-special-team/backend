@@ -62,10 +62,12 @@ public class PlaceController {
 
     @Operation(summary = "히든 플레이스 등록", responses = {
             @ApiResponse(responseCode = "201", description = "등록 성공"),
+            @ApiResponse(responseCode = "400", description = "방문 내역이 존재하는 Place"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 ( User | Place ) 정보"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @PostMapping
-    public ResponseEntity create(@RequestBody @Valid CreatePlaceDto createPlaceDto) {
+    public ResponseEntity<Place> create(@RequestBody @Valid CreatePlaceDto createPlaceDto) {
         Place place = placeService.create(createPlaceDto);
         placeService.visit(new VisitPlaceDto(createPlaceDto.getUserId(), place.getId()));
 
@@ -75,20 +77,24 @@ public class PlaceController {
 
     @Operation(summary = "플레이스 방문", responses = {
             @ApiResponse(responseCode = "201", description = "등록 성공"),
+            @ApiResponse(responseCode = "400", description = "방문 내역이 존재하는 Place"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 ( User | Place ) 정보"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @PostMapping("/check-in")
-    public ResponseEntity visitPlace(@RequestBody VisitPlaceDto visitPlaceDto) {
+    public ResponseEntity<Place> visitPlace(@RequestBody VisitPlaceDto visitPlaceDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(placeService.visit(visitPlaceDto));
     }
 
     @Operation(summary = "플레이스 추천",
-            description = "201 return 시\n" +
-                    "SUCCESS : 정상 추천 수 증가 완료\n" +
+            description =
+                    "SUCCESS : 정상 추천 수 증가 완료" +
                     "UPGRADE : 히든 플레이스 -> 랜드마크 승급 (해당 추천으로 인해)",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "추천 완료"),
+                    @ApiResponse(responseCode = "201", description = "추천 완료 SUCCESS | UPGRADE"),
+                    @ApiResponse(responseCode = "400", description = "추천 내역이 존재하는 Place"),
+                    @ApiResponse(responseCode = "404", description = "존재하지 않는 ( User | Place ) 정보"),
                     @ApiResponse(responseCode = "500", description = "서버 에러")
             })
     @PostMapping("/recommendation")

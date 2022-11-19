@@ -33,6 +33,7 @@ public class SpecialControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ResponseError> badRequestException(AuthorizationException exception) {
+        log.info("bad request {}", exception.getMessage(), exception);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseError.of(exception.getMessage()));
     }
 

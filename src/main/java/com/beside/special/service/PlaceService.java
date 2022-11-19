@@ -56,11 +56,11 @@ public class PlaceService {
                 .orElseThrow(() -> new NotFoundException("존재하지않는 User"));
 
         Place place = new Place(
-                createPlaceDto.getCoordinate(),
-                createPlaceDto.getName(),
-                writer,
-                createPlaceDto.getImages(),
-                createPlaceDto.getHashTags()
+            createPlaceDto.getCoordinate(),
+            createPlaceDto.getName(),
+            writer,
+            createPlaceDto.getImages(),
+            createPlaceDto.getHashTags()
         );
 
         return placeRepository.save(place);
@@ -91,9 +91,9 @@ public class PlaceService {
                 .build();
 
         VisitInfo userVisitInfo = VisitInfo.builder()
-                .id(place.getId())
-                .visitedAt(now)
-                .build();
+            .id(place.getId())
+            .visitedAt(now)
+            .build();
 
         System.out.println(place);
 

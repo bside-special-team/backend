@@ -27,4 +27,17 @@ public class UserService {
                 new User(provider, subject, email, null)
             ));
     }
+
+    public User findById(String id) {
+        return userRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException(String.format("not found user %s", id)));
+    }
+
+    @Transactional
+    public User update(String userId, String nickName) {
+        User user = findById(userId);
+        user.update(nickName);
+        userRepository.save(user);
+        return user;
+    }
 }

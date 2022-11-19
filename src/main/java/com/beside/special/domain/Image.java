@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Setter
 @Builder
-public class Image extends BaseEntity{
+public class Image extends BaseEntity {
     @Id
     private String id;
     private String uuid;

@@ -1,6 +1,7 @@
 package com.beside.special.domain;
 
 import com.beside.special.service.dto.UpdatePlaceDto;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.logging.log4j.util.Strings;

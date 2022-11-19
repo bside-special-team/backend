@@ -11,7 +11,7 @@ import java.util.Objects;
 @Document
 public class RefreshToken extends BaseEntity {
 
-    private static int ONE_WEEK_SECOND = 604800;
+    private static int ONE_WEEK_SECOND = 604800000;
     @Id
     private String id;
 
@@ -24,7 +24,7 @@ public class RefreshToken extends BaseEntity {
         this.expiresIn = ONE_WEEK_SECOND;
     }
 
-    private boolean verify(String accessToken) {
+    public boolean verify(String accessToken) {
         return Objects.equals(this.accessToken, accessToken) &&
             getCreatedAt().plusSeconds(expiresIn).isAfter(LocalDateTime.now());
     }

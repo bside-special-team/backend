@@ -1,6 +1,10 @@
 package com.beside.special.controller;
 
-import com.beside.special.domain.*;
+import com.beside.special.domain.Coordinate;
+import com.beside.special.domain.Place;
+import com.beside.special.domain.PlaceRepository;
+import com.beside.special.domain.PlaceType;
+import com.beside.special.domain.RecommendationResponse;
 import com.beside.special.domain.dto.FindPlaceResponse;
 import com.beside.special.domain.dto.UserDto;
 import com.beside.special.service.PlaceService;
@@ -13,7 +17,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -32,8 +40,8 @@ public class PlaceController {
     }
 
     @Operation(summary = "플레이스 전체 조회", responses = {
-            @ApiResponse(responseCode = "200", description = "조회 성공"),
-            @ApiResponse(responseCode = "500", description = "서버 에러")
+        @ApiResponse(responseCode = "200", description = "조회 성공"),
+        @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @GetMapping("/")
     public FindPlaceResponse findAll() {
@@ -82,8 +90,8 @@ public class PlaceController {
     }
 
     @Operation(summary = "좌표 기반 플레이스 조회", responses = {
-            @ApiResponse(responseCode = "200", description = "조회 성공"),
-            @ApiResponse(responseCode = "500", description = "서버 에러")
+        @ApiResponse(responseCode = "200", description = "조회 성공"),
+        @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @GetMapping("/coordinate")
     public ResponseEntity<FindByCoordinatePlaceDto> findByCoordinate(
@@ -99,10 +107,10 @@ public class PlaceController {
     }
 
     @Operation(summary = "플레이스 방문", responses = {
-            @ApiResponse(responseCode = "201", description = "등록 성공"),
-            @ApiResponse(responseCode = "400", description = "방문 내역이 존재하는 Place"),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 ( User | Place ) 정보"),
-            @ApiResponse(responseCode = "500", description = "서버 에러")
+        @ApiResponse(responseCode = "201", description = "등록 성공"),
+        @ApiResponse(responseCode = "400", description = "방문 내역이 존재하는 Place"),
+        @ApiResponse(responseCode = "404", description = "존재하지 않는 ( User | Place ) 정보"),
+        @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @PostMapping("/check-in")
     public ResponseEntity<Place> visitPlace(@RequestParam String placeId,
@@ -120,6 +128,7 @@ public class PlaceController {
                     @ApiResponse(responseCode = "404", description = "존재하지 않는 ( User | Place ) 정보"),
                     @ApiResponse(responseCode = "500", description = "서버 에러")
             })
+
     @PostMapping("/recommendation")
     public ResponseEntity<RecommendationResponse> likePlace(@RequestParam String placeId,
                                                             @AuthUser UserDto user) {

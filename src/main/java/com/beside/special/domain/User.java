@@ -1,6 +1,5 @@
 package com.beside.special.domain;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -11,6 +10,8 @@ import java.util.Set;
 @Getter
 @Document
 public class User {
+    private static final int INIT_POINT = 0;
+
     @Id
     private String id;
 
@@ -26,6 +27,10 @@ public class User {
 
     private Set<String> recPlaces;
 
+    private UserLevel userLevel;
+
+    private int point;
+
     public User(AuthProvider authProvider, String subject, String email, String nickName) {
         this.authProvider = authProvider;
         this.subject = subject;
@@ -33,5 +38,15 @@ public class User {
         this.nickName = nickName;
         this.visitInfos = new LinkedHashSet<>();
         this.recPlaces = new LinkedHashSet<>();
+        this.userLevel = UserLevel.LEVEL_ONE;
+        this.point = INIT_POINT;
+    }
+
+    public void update(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getLabel() {
+        return userLevel.getLabel();
     }
 }

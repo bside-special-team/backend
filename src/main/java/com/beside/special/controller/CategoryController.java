@@ -4,7 +4,6 @@ import com.beside.special.domain.Category;
 import com.beside.special.service.CategoryService;
 import com.beside.special.service.dto.CreateCategoryDto;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;

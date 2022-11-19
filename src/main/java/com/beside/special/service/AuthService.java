@@ -3,7 +3,6 @@ package com.beside.special.service;
 import com.auth0.jwk.Jwk;
 import com.auth0.jwk.JwkException;
 import com.auth0.jwk.JwkProvider;
-import com.auth0.jwk.JwkProviderBuilder;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -14,12 +13,9 @@ import com.beside.special.domain.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.net.URI;
-import java.net.URL;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Date;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -54,8 +50,7 @@ public class AuthService {
         if (!Objects.equals(idToken.getIssuer(), authProvider.getIssuer())) {
             throw new IllegalArgumentException("issuer 불일치");
         }
-        //553241441268-mm92utt2laasq5bvbeq5r6s4b7lu8d7j.apps.googleusercontent.com
-        //553241441268-206n2hpirniitnp90tm7j4qm1pkludmh.apps.googleusercontent.com
+
         // client_id 검증
         if (!idToken.getAudience().contains(specialRegistration.getClientId())) {
             throw new IllegalArgumentException("appKey 불일치");

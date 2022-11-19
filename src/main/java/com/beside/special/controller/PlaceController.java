@@ -6,6 +6,7 @@ import com.beside.special.domain.dto.UserDto;
 import com.beside.special.service.PlaceService;
 import com.beside.special.service.dto.CreatePlaceDto;
 import com.beside.special.service.dto.FindByCoordinatePlaceDto;
+import com.beside.special.service.dto.GainPointResponse;
 import com.beside.special.service.dto.UpdatePlaceDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,7 +36,7 @@ public class PlaceController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    @GetMapping("/")
+    @GetMapping
     public FindPlaceResponse findAll() {
         List<Place> hiddenPlaces = placeRepository.findAllByPlaceType(PlaceType.HIDDEN);
         List<Place> landMarkPlaces = placeRepository.findAllByPlaceType(PlaceType.LAND_MARK);
@@ -47,10 +48,10 @@ public class PlaceController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 ( User ) 정보"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    @PostMapping("/")
-    public ResponseEntity<Place> create(@RequestBody CreatePlaceDto createPlaceDto,
+    @PostMapping
+    public ResponseEntity<GainPointResponse<Place>> create(@RequestBody CreatePlaceDto createPlaceDto,
                                         @AuthUser UserDto user) {
-        Place place = placeService.create(user, createPlaceDto);
+        GainPointResponse<Place> place = placeService.create(user, createPlaceDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(place);
@@ -62,7 +63,7 @@ public class PlaceController {
             @ApiResponse(responseCode = "404", description = "존재하지않는 Place"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    @PutMapping("/")
+    @PutMapping
     public ResponseEntity<Place> update(
             @RequestBody UpdatePlaceDto updatePlaceDto,
             @AuthUser UserDto user) {
@@ -108,8 +109,8 @@ public class PlaceController {
         @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @PostMapping("/check-in")
-    public ResponseEntity<Place> visitPlace(@RequestParam String placeId,
-                                            @AuthUser UserDto user) {
+    public ResponseEntity<GainPointResponse<Place>> visitPlace(@RequestParam String placeId,
+                                                               @AuthUser UserDto user) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(placeService.visit(user, placeId));
     }

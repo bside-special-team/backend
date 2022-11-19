@@ -1,5 +1,7 @@
 package com.beside.special.domain;
 
+import com.beside.special.service.dto.UpdatePlaceDto;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.logging.log4j.util.Strings;
@@ -28,9 +30,9 @@ public class Place extends BaseEntity {
 
     private String name;
 
-    private List<String> imageUrls;
+    private List<String> imageUuids;
 
-    private Integer visitCount = 1;
+    private int visitCount = 1;
 
     private List<String> hashTags;
 
@@ -38,15 +40,17 @@ public class Place extends BaseEntity {
 
     private Set<String> recommendUsers;
 
+    private int recommendCount = 0;
+
     public Place(Coordinate coordinate, String name, User writer,
-                 List<String> imageUrls, List<String> hashTags) {
+                 List<String> imageUuids, List<String> hashTags) {
         // validate(coordinate, name, hashTags);
         // TODO 사진 validation
         this.placeType = PlaceType.HIDDEN;
         this.coordinate = coordinate;
         this.name = name;
         this.writer = writer;
-        this.imageUrls = imageUrls;
+        this.imageUuids = imageUuids;
         this.hashTags = hashTags;
         this.visitInfos = new HashSet<>();
     }
@@ -63,5 +67,12 @@ public class Place extends BaseEntity {
         if (!CollectionUtils.isEmpty(hashTags) && hashTags.size() > 3) {
             throw new IllegalArgumentException("해시태그는 최대 3개 등록 가능합니다.");
         }
+    }
+
+    public Place update(UpdatePlaceDto updatePlaceDto) {
+        this.name = updatePlaceDto.getName();
+        this.imageUuids = updatePlaceDto.getImageUuids();
+        this.hashTags = updatePlaceDto.getHashTags();
+        return this;
     }
 }

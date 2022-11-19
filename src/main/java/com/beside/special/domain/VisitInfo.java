@@ -11,8 +11,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-// User Entity contains Place ID
-// Place Entity contains User ID
 public class VisitInfo {
     private String id;
 

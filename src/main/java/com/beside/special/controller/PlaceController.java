@@ -6,9 +6,11 @@ import com.beside.special.domain.PlaceRepository;
 import com.beside.special.domain.PlaceType;
 import com.beside.special.domain.RecommendationResponse;
 import com.beside.special.domain.dto.FindPlaceResponse;
+import com.beside.special.domain.dto.UserDto;
 import com.beside.special.service.PlaceService;
 import com.beside.special.service.dto.CreatePlaceDto;
-import com.beside.special.service.dto.VisitPlaceDto;
+import com.beside.special.service.dto.FindByCoordinatePlaceDto;
+import com.beside.special.service.dto.UpdatePlaceDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -42,45 +43,67 @@ public class PlaceController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    @GetMapping
+    @GetMapping("/")
     public FindPlaceResponse findAll() {
         List<Place> hiddenPlaces = placeRepository.findAllByPlaceType(PlaceType.HIDDEN);
         List<Place> landMarkPlaces = placeRepository.findAllByPlaceType(PlaceType.LAND_MARK);
         return new FindPlaceResponse(hiddenPlaces, landMarkPlaces);
     }
 
+    @Operation(summary = "히든 플레이스 등록", responses = {
+            @ApiResponse(responseCode = "201", description = "등록 성공"),
+            @ApiResponse(responseCode = "400", description = "방문 내역이 존재하는 Place"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 ( User | Place ) 정보"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    @PostMapping("/")
+    public ResponseEntity<Place> create(@RequestBody CreatePlaceDto createPlaceDto,
+                                        @AuthUser UserDto user) {
+        Place place = placeService.create(user, createPlaceDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(place);
+    }
+
+    @Operation(summary = "플레이스 수정", responses = {
+            @ApiResponse(responseCode = "200", description = "수정 성공"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    @PutMapping("/")
+    public ResponseEntity<Place> update(
+            @RequestBody UpdatePlaceDto updatePlaceDto,
+            @AuthUser UserDto user) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(placeService.update(user, updatePlaceDto));
+    }
+
+    @Operation(summary = "플레이스 삭제", responses = {
+            @ApiResponse(responseCode = "204", description = "삭제 성공"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    @DeleteMapping("/")
+    public ResponseEntity<?> delete(
+            @RequestParam String placeId,
+            @AuthUser UserDto user) {
+        placeService.delete(user, placeId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     @Operation(summary = "좌표 기반 플레이스 조회", responses = {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    @GetMapping("coordinate")
-    public FindPlaceResponse findByCoordinate(
-        @Parameter(description = "시작 위도", required = true, example = "120.12312312") BigDecimal fromLatitude,
-        @Parameter(description = "시작 경도", required = true, example = "20.12312312") BigDecimal fromLongitude,
-        @Parameter(description = "종료 위도", required = true, example = "124.12312312") BigDecimal toLatitude,
-        @Parameter(description = "종료 경도", required = true, example = "28.12312312") BigDecimal toLongitude) {
+    @GetMapping("/coordinate")
+    public ResponseEntity<FindByCoordinatePlaceDto> findByCoordinate(
+            @Parameter(description = "시작 위도", required = true, example = "120.12312312") BigDecimal fromLatitude,
+            @Parameter(description = "시작 경도", required = true, example = "20.12312312") BigDecimal fromLongitude,
+            @Parameter(description = "종료 위도", required = true, example = "124.12312312") BigDecimal toLatitude,
+            @Parameter(description = "종료 경도", required = true, example = "28.12312312") BigDecimal toLongitude) {
         Coordinate from = new Coordinate(fromLatitude, fromLongitude);
         Coordinate to = new Coordinate(toLatitude, toLongitude);
-        List<Place> hiddenPlaces = placeRepository.findByCoordinateBetweenAndPlaceType(from, to,
-            PlaceType.HIDDEN);
-        List<Place> landMarkPlaces = placeRepository.findByCoordinateBetweenAndPlaceType(from, to,
-            PlaceType.LAND_MARK);
-        return new FindPlaceResponse(hiddenPlaces, landMarkPlaces);
-    }
 
-    @Operation(summary = "히든 플레이스 등록", responses = {
-        @ApiResponse(responseCode = "201", description = "등록 성공"),
-        @ApiResponse(responseCode = "400", description = "방문 내역이 존재하는 Place"),
-        @ApiResponse(responseCode = "404", description = "존재하지 않는 ( User | Place ) 정보"),
-        @ApiResponse(responseCode = "500", description = "서버 에러")
-    })
-    @PostMapping
-    public ResponseEntity<Place> create(@RequestBody @Valid CreatePlaceDto createPlaceDto) {
-        Place place = placeService.create(createPlaceDto);
-        placeService.visit(new VisitPlaceDto(createPlaceDto.getUserId(), place.getId()));
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-            .body(place);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(placeService.findByCoordinate(from, to));
     }
 
     @Operation(summary = "플레이스 방문", responses = {
@@ -90,24 +113,26 @@ public class PlaceController {
         @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @PostMapping("/check-in")
-    public ResponseEntity<Place> visitPlace(@RequestBody VisitPlaceDto visitPlaceDto) {
+    public ResponseEntity<Place> visitPlace(@RequestParam String placeId,
+                                            @AuthUser UserDto user) {
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(placeService.visit(visitPlaceDto));
+                .body(placeService.visit(user, placeId));
     }
 
     @Operation(summary = "플레이스 추천",
-        description =
-            "SUCCESS : 정상 추천 수 증가 완료" +
-                "UPGRADE : 히든 플레이스 -> 랜드마크 승급 (해당 추천으로 인해)",
-        responses = {
-            @ApiResponse(responseCode = "201", description = "추천 완료 SUCCESS | UPGRADE"),
-            @ApiResponse(responseCode = "400", description = "추천 내역이 존재하는 Place"),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 ( User | Place ) 정보"),
-            @ApiResponse(responseCode = "500", description = "서버 에러")
-        })
+            description =
+                    "SUCCESS : 정상 추천 수 증가 완료\n" + "UPGRADE : 히든 플레이스 -> 랜드마크 승급 (해당 추천으로 인해)",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "추천 완료 SUCCESS | UPGRADE"),
+                    @ApiResponse(responseCode = "400", description = "추천 내역이 존재하는 Place"),
+                    @ApiResponse(responseCode = "404", description = "존재하지 않는 ( User | Place ) 정보"),
+                    @ApiResponse(responseCode = "500", description = "서버 에러")
+            })
+
     @PostMapping("/recommendation")
-    public ResponseEntity<RecommendationResponse> likePlace(@RequestBody VisitPlaceDto visitPlaceDto) {
+    public ResponseEntity<RecommendationResponse> likePlace(@RequestParam String placeId,
+                                                            @AuthUser UserDto user) {
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(placeService.recommend(visitPlaceDto));
+                .body(placeService.recommend(user, placeId));
     }
 }

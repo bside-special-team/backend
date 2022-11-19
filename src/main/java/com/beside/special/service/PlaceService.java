@@ -147,4 +147,9 @@ public class PlaceService {
                 .randMarkCount(randMarkList.size())
                 .build();
     }
+
+    public Place findById(String placeId) {
+        return placeRepository.findById(placeId)
+            .orElseThrow(() -> new NotFoundException("존재하지않는 Place"));
+    }
 }

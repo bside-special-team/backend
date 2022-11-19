@@ -19,10 +19,6 @@ public class CreatePlaceDto {
     @NotNull
     private Coordinate coordinate;
 
-    @Schema(description = "유저 ID", required = true)
-    @NotNull
-    private String userId;
-
     @Schema(description = "플레이스명", required = true, example = "우리동네", maxLength = 10)
     @Size(max = 10, message = "플레이스명은 최대 10자 입니다.")
     private String name;

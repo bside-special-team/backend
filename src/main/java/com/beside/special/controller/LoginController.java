@@ -71,20 +71,4 @@ public class LoginController {
 
         return new TokenResponse(accessToken, refreshToken.getId());
     }
-
-    @Operation(summary = "JWT refresh", responses = {
-        @ApiResponse(responseCode = "200", description = "refresh 성공"),
-        @ApiResponse(responseCode = "500", description = "서버 에러")
-    })
-    @PostMapping("update")
-    public TokenResponse update(@RequestBody RefreshTokenRequest request) {
-        if (!refreshTokenService.isVerify(request.getAccessToken(), request.getRefreshToken())) {
-            throw new AuthorizationException(String.format("유효하지 않은 request %s", request));
-        }
-
-        String accessToken = accessTokenService.generate(request.getAccessToken());
-        RefreshToken refreshToken = refreshTokenService.generate(accessToken);
-
-        return new TokenResponse(accessToken, refreshToken.getId());
-    }
 }

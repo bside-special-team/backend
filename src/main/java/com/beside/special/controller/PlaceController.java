@@ -50,7 +50,7 @@ public class PlaceController {
     })
     @PostMapping
     public ResponseEntity<GainPointResponse<Place>> create(@RequestBody CreatePlaceDto createPlaceDto,
-                                        @AuthUser UserDto user) {
+                                                           @Parameter(hidden = true) @AuthUser UserDto user) {
         GainPointResponse<Place> place = placeService.create(user, createPlaceDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -66,7 +66,7 @@ public class PlaceController {
     @PutMapping
     public ResponseEntity<Place> update(
             @RequestBody UpdatePlaceDto updatePlaceDto,
-            @AuthUser UserDto user) {
+            @Parameter(hidden = true) @AuthUser UserDto user) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(placeService.update(user, updatePlaceDto));
     }
@@ -80,7 +80,7 @@ public class PlaceController {
     @DeleteMapping("/")
     public ResponseEntity<?> delete(
             @RequestParam String placeId,
-            @AuthUser UserDto user) {
+            @Parameter(hidden = true) @AuthUser UserDto user) {
         placeService.delete(user, placeId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -110,7 +110,7 @@ public class PlaceController {
     })
     @PostMapping("/check-in")
     public ResponseEntity<GainPointResponse<Place>> visitPlace(@RequestParam String placeId,
-                                                               @AuthUser UserDto user) {
+                                                               @Parameter(hidden = true) @AuthUser UserDto user) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(placeService.visit(user, placeId));
     }
@@ -127,7 +127,7 @@ public class PlaceController {
 
     @PostMapping("/recommendation")
     public ResponseEntity<RecommendationResponse> likePlace(@RequestParam String placeId,
-                                                            @AuthUser UserDto user) {
+                                                            @Parameter(hidden = true) @AuthUser UserDto user) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(placeService.recommend(user, placeId));
     }

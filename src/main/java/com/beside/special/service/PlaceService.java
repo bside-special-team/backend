@@ -77,8 +77,9 @@ public class PlaceService {
             createPlaceDto.getHashTags()
         );
 
-        UserPointResponse userPointResponse = userPointCalculator.calculatePoint(writer, PointAction.CREATE_PLACE);
-        return new GainPointResponse(placeRepository.save(place), userPointResponse);
+        placeRepository.save(place);
+        UserPointResponse userPointResponse = userPointCalculator.calculatePoint(writer, PointAction.CREATE_PLACE, place.getId());
+        return new GainPointResponse(place, userPointResponse);
     }
 
     @Transactional
@@ -115,7 +116,7 @@ public class PlaceService {
         place.setVisitCount(place.getVisitCount() + 1);
 
         placeRepository.save(place);
-        UserPointResponse userPointResponse = userPointCalculator.calculatePoint(writer, PointAction.VISIT);
+        UserPointResponse userPointResponse = userPointCalculator.calculatePoint(writer, PointAction.VISIT, place.getId());
         userRepository.save(writer);
 
         return new GainPointResponse(place,userPointResponse);

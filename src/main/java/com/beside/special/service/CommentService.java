@@ -37,10 +37,9 @@ public class CommentService {
     public GainPointResponse<Comment> create(String userId, CreateCommentRequest request) {
         Place place = placeService.findById(request.getPlaceId());
         User user = userService.findById(userId);
-        Comment comment = new Comment(request.getComment(), user, place);
+        Comment comment = commentRepository.save(new Comment(request.getComment(), user, place));
         UserPointResponse userPointResponse =
-            userPointCalculator.calculatePoint(comment.getUser(), PointAction.CREATE_COMMENT);
-        commentRepository.save(comment);
+            userPointCalculator.calculatePoint(comment.getUser(), PointAction.CREATE_COMMENT, comment.getId());
 
         return new GainPointResponse(comment, userPointResponse);
     }

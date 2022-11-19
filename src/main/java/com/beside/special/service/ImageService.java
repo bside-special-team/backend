@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -35,13 +37,19 @@ public class ImageService {
     }
 
     // 이미지 업로드 ( MultiPartFile, 저장 디렉토리 ) TODO File Size 처리 (제한?)
-    public List<String> uploadImage(List<MultipartFile> images, String targetDirectory) {
+    public List<String> uploadImage(List<MultipartFile> images, String userId) {
         List<String> imageUuids = new ArrayList<>();
 
         for (MultipartFile file : images) {
             validateImage(file);
 
-            String fileKey = targetDirectory + "/" + getImageKey(file);
+            LocalDate now = LocalDate.now();
+            String fileKey = String.format("images/%d/%d/%d/%s",
+                now.getYear(),
+                now.getMonth().getValue(),
+                now.getDayOfMonth(),
+                getImageKey(file)
+            );
             try {
                 s3.putObject(new PutObjectRequest(
                     BUCKET_NAME,
@@ -56,6 +64,7 @@ public class ImageService {
             Image image = Image.builder()
                 .fileKey(fileKey)
                 .uuid(String.valueOf(UUID.randomUUID()))
+                .userId(userId)
                 .build();
 
             imageRepository.save(image);

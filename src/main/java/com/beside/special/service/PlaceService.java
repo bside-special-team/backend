@@ -1,14 +1,6 @@
 package com.beside.special.service;
 
-import com.beside.special.domain.Coordinate;
-import com.beside.special.domain.Place;
-import com.beside.special.domain.PlaceRepository;
-import com.beside.special.domain.PlaceType;
-import com.beside.special.domain.PointAction;
-import com.beside.special.domain.RecommendationResponse;
-import com.beside.special.domain.User;
-import com.beside.special.domain.UserRepository;
-import com.beside.special.domain.VisitInfo;
+import com.beside.special.domain.*;
 import com.beside.special.domain.dto.UserDto;
 import com.beside.special.exception.BadRequestException;
 import com.beside.special.exception.ForbiddenException;
@@ -45,7 +37,7 @@ public class PlaceService {
         Place place = placeRepository.findById(updatePlaceDto.getPlaceId())
             .orElseThrow(() -> new NotFoundException("존재하지않는 Place"));
 
-        if (!place.getWriter().getId().equals(user.getUserId())) {
+        if (!place.getWriterId().equals(user.getUserId())) {
             throw new ForbiddenException("수정 권한이 존재하지 않습니다.");
         }
 
@@ -57,7 +49,7 @@ public class PlaceService {
         Place place = placeRepository.findById(placeId)
             .orElseThrow(() -> new NotFoundException("존재하지않는 Place"));
 
-        if (!place.getWriter().getId().equals(user.getUserId())) {
+        if (!place.getWriterId().equals(user.getUserId())) {
             throw new ForbiddenException("삭제 권한이 존재하지 않습니다.");
         }
 
@@ -72,7 +64,7 @@ public class PlaceService {
         Place place = new Place(
             createPlaceDto.getCoordinate(),
             createPlaceDto.getName(),
-            writer,
+            writer.getId(),
             createPlaceDto.getImages(),
             createPlaceDto.getHashTags()
         );
@@ -156,8 +148,8 @@ public class PlaceService {
     public FindByCoordinatePlaceDto findByCoordinate(Coordinate from, Coordinate to) {
         List<Place> hiddenPlaceList =
             placeRepository.findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(from, to, PlaceType.HIDDEN);
-        List<Place> randMarkList = placeRepository.findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(from,
-            to, PlaceType.LAND_MARK);
+        List<Place> randMarkList =
+                placeRepository.findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(from, to, PlaceType.LAND_MARK);
 
         return FindByCoordinatePlaceDto.builder()
             .hiddenPlaceList(hiddenPlaceList.subList(0, Math.min((hiddenPlaceList.size()), 30)))

@@ -1,6 +1,7 @@
 package com.beside.special.controller;
 
 import com.beside.special.domain.AuthUser;
+import com.beside.special.domain.BlockInfo;
 import com.beside.special.domain.RefreshToken;
 import com.beside.special.domain.User;
 import com.beside.special.domain.dto.TokenResponse;
@@ -14,11 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "User", description = "유저 관리")
 @RequestMapping("/api/v1/users")

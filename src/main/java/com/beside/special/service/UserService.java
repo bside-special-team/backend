@@ -1,6 +1,8 @@
 package com.beside.special.service;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.beside.special.domain.*;
+import com.beside.special.domain.dto.UserDto;
 import com.beside.special.domain.AuthProvider;
 import static com.beside.special.domain.PointAction.ATTENDANCE;
 import com.beside.special.domain.User;

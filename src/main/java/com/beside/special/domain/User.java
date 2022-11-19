@@ -49,4 +49,13 @@ public class User {
     public String getLabel() {
         return userLevel.getLabel();
     }
+    public boolean addPoint(int point) {
+        this.point += point;
+        UserLevel level = UserLevel.findByPoint(this.point);
+        if (this.userLevel != level) {
+            this.userLevel = level;
+            return true;
+        }
+        return false;
+    }
 }

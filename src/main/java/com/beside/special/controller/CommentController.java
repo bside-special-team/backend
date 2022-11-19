@@ -7,6 +7,7 @@ import com.beside.special.service.CommentService;
 import com.beside.special.service.dto.CommentResponse;
 import com.beside.special.service.dto.CommentResponses;
 import com.beside.special.service.dto.CreateCommentRequest;
+import com.beside.special.service.dto.GainPointResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -62,9 +63,12 @@ public class CommentController {
         @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @PostMapping
-    public ResponseEntity<CommentResponse> register(@Parameter(hidden = true) @AuthUser UserDto userDto,
-                                                    @Valid @RequestBody CreateCommentRequest request) {
-        Comment comment = commentService.create(userDto.getUserId(), request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(CommentResponse.from(comment));
+    public ResponseEntity<GainPointResponse<CommentResponse>> register(@Parameter(hidden = true) @AuthUser UserDto userDto,
+                                                                       @Valid @RequestBody CreateCommentRequest request) {
+        GainPointResponse<Comment> gainPointResponse = commentService.create(userDto.getUserId(), request);
+        CommentResponse commentResponse = CommentResponse.from(gainPointResponse.getResponse());
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+            new GainPointResponse(commentResponse, gainPointResponse.getPointResult())
+        );
     }
 }

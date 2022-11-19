@@ -78,33 +78,34 @@ public class PlaceService {
         );
 
         placeRepository.save(place);
-        UserPointResponse userPointResponse = userPointCalculator.calculatePoint(writer, PointAction.CREATE_PLACE, place.getId());
+        UserPointResponse userPointResponse = userPointCalculator.calculatePoint(writer, PointAction.CREATE_PLACE,
+            place.getId());
         return new GainPointResponse(place, userPointResponse);
     }
 
     @Transactional
     public GainPointResponse<Place> visit(UserDto user, String placeId) {
         Place place = placeRepository.findById(placeId)
-                .orElseThrow(() -> new NotFoundException("존재하지않는 Place"));
+            .orElseThrow(() -> new NotFoundException("존재하지않는 Place"));
 
         User writer = userRepository.findById(user.getUserId())
-                .orElseThrow(() -> new NotFoundException("존재하지않는 User"));
+            .orElseThrow(() -> new NotFoundException("존재하지않는 User"));
 
         place.getVisitInfos().stream()
-                .filter(userVisitPlace -> userVisitPlace.getId().equals(place.getId()))
-                .findFirst()
-                .ifPresent(
-                        userVisitPlace -> {
-                            throw new BadRequestException("이전 방문 내역 [ " + userVisitPlace.getVisitedAt() + " ]");
-                        }
-                );
+            .filter(userVisitPlace -> userVisitPlace.getId().equals(place.getId()))
+            .findFirst()
+            .ifPresent(
+                userVisitPlace -> {
+                    throw new BadRequestException("이전 방문 내역 [ " + userVisitPlace.getVisitedAt() + " ]");
+                }
+            );
 
         LocalDateTime now = LocalDateTime.now();
 
         VisitInfo placeVisitInfo = VisitInfo.builder()
-                .id(writer.getId())
-                .visitedAt(now)
-                .build();
+            .id(writer.getId())
+            .visitedAt(now)
+            .build();
 
         VisitInfo userVisitInfo = VisitInfo.builder()
             .id(place.getId())
@@ -116,10 +117,11 @@ public class PlaceService {
         place.setVisitCount(place.getVisitCount() + 1);
 
         placeRepository.save(place);
-        UserPointResponse userPointResponse = userPointCalculator.calculatePoint(writer, PointAction.VISIT, place.getId());
+        UserPointResponse userPointResponse = userPointCalculator.calculatePoint(writer, PointAction.VISIT,
+            place.getId());
         userRepository.save(writer);
 
-        return new GainPointResponse(place,userPointResponse);
+        return new GainPointResponse(place, userPointResponse);
     }
 
     @Transactional
@@ -167,6 +169,6 @@ public class PlaceService {
 
     public Place findById(String placeId) {
         return placeRepository.findById(placeId)
-            .orElseThrow(() -> new NotFoundException("존재하지않는 Place"));
+            .orElseThrow(() -> new NotFoundException(String.format("존재하지않는 Place [%s]", placeId)));
     }
 }

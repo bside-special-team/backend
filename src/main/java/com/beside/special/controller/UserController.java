@@ -10,6 +10,7 @@ import com.beside.special.domain.dto.UserUpdateRequest;
 import com.beside.special.service.AccessTokenService;
 import com.beside.special.service.RefreshTokenService;
 import com.beside.special.service.UserService;
+import com.beside.special.service.dto.GainPointResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,8 +34,8 @@ public class UserController {
     }
 
     @GetMapping("one")
-    public User getUser(@Parameter(hidden = true) @AuthUser UserDto userDto) {
-        return userService.findById(userDto.getUserId());
+    public GainPointResponse<User> getUser(@Parameter(hidden = true) @AuthUser UserDto userDto) {
+        return userService.findByIdWithAttendance(userDto.getUserId());
     }
 
     @Operation(summary = "닉네임 업데이트", responses = {

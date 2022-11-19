@@ -6,6 +6,8 @@ services:
     restart: always
     ports:
       - "37017:27017"
+    volumes:
+      - ./special/mongo/db:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: special
       MONGO_INITDB_ROOT_PASSWORD: special

@@ -1,7 +1,10 @@
 package com.beside.special.controller;
 
+import com.beside.special.domain.AuthUser;
+import com.beside.special.domain.dto.UserDto;
 import com.beside.special.service.ImageService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
@@ -32,11 +35,10 @@ public class ImageController {
         @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @PostMapping
-    public ResponseEntity<List<String>> uploadImage(
-        @RequestParam("images") List<MultipartFile> images,
-        @RequestParam("dest") String dest) {
+    public ResponseEntity<List<String>> uploadImage(@RequestParam("images") List<MultipartFile> images,
+                                                    @Parameter(hidden = true) @AuthUser UserDto userDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(imageService.uploadImage(images, dest));
+            .body(imageService.uploadImage(images, userDto.getUserId()));
     }
 
     // TODO WEBP 변환

@@ -39,3 +39,5 @@ out/
 
 ### MAC
 .DS_Store
+
+special-docker-compose/special/

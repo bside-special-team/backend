@@ -15,4 +15,5 @@ public class Image extends BaseEntity {
     private String id;
     private String uuid;
     private String fileKey;
+    private String userId;
 }

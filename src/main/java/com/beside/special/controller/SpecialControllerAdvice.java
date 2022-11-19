@@ -32,7 +32,8 @@ public class SpecialControllerAdvice extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ResponseError> badRequestException(AuthorizationException exception) {
+    public ResponseEntity<ResponseError> badRequestException(BadRequestException exception) {
+        log.info("bad request {}", exception.getMessage(), exception);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseError.of(exception.getMessage()));
     }
 
@@ -42,12 +43,12 @@ public class SpecialControllerAdvice extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ForbiddenException.class)
-    public ResponseEntity<ResponseError> forbiddenException(AuthorizationException exception) {
+    public ResponseEntity<ResponseError> forbiddenException(ForbiddenException exception) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseError.of(exception.getMessage()));
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ResponseError> notFoundException(AuthorizationException exception) {
+    public ResponseEntity<ResponseError> notFoundException(NotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseError.of(exception.getMessage()));
     }
 

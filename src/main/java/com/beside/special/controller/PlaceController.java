@@ -44,8 +44,7 @@ public class PlaceController {
 
     @Operation(summary = "히든 플레이스 등록", responses = {
             @ApiResponse(responseCode = "201", description = "등록 성공"),
-            @ApiResponse(responseCode = "400", description = "방문 내역이 존재하는 Place"),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 ( User | Place ) 정보"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 ( User ) 정보"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @PostMapping("/")
@@ -59,6 +58,8 @@ public class PlaceController {
 
     @Operation(summary = "플레이스 수정", responses = {
             @ApiResponse(responseCode = "200", description = "수정 성공"),
+            @ApiResponse(responseCode = "403", description = "Place 작성자가 아님"),
+            @ApiResponse(responseCode = "404", description = "존재하지않는 Place"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @PutMapping("/")
@@ -71,6 +72,8 @@ public class PlaceController {
 
     @Operation(summary = "플레이스 삭제", responses = {
             @ApiResponse(responseCode = "204", description = "삭제 성공"),
+            @ApiResponse(responseCode = "403", description = "Place 작성자가 아님"),
+            @ApiResponse(responseCode = "404", description = "존재하지않는 Place"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @DeleteMapping("/")

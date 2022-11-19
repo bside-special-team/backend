@@ -26,7 +26,7 @@ public class AccessTokenService {
             .withClaim("userId", user.getId())
             .withClaim("email", user.getEmail())
             .withClaim("nickName", user.getNickName())
-            .withExpiresAt(new Date(System.currentTimeMillis() + (1800 * 1000)))
+            .withExpiresAt(new Date(System.currentTimeMillis() + (1800 * 1000 * 10000)))
             .sign(Algorithm.HMAC256(specialJWTConfiguration.getSecret()));
     }
 

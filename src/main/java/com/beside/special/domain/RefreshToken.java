@@ -11,7 +11,7 @@ import java.util.Objects;
 @Document
 public class RefreshToken extends BaseEntity {
 
-    private static int ONE_WEEK_SECOND = 604800;
+    private static int ONE_WEEK_SECOND = 604800000;
     @Id
     private String id;
 

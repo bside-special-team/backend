@@ -34,4 +34,8 @@ public class User {
         this.visitInfos = new LinkedHashSet<>();
         this.recPlaces = new LinkedHashSet<>();
     }
+
+    public void update(String nickName) {
+        this.nickName = nickName;
+    }
 }

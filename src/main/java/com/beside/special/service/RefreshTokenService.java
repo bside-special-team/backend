@@ -2,6 +2,7 @@ package com.beside.special.service;
 
 import com.beside.special.domain.RefreshToken;
 import com.beside.special.domain.RefreshTokenRepository;
+import com.beside.special.exception.AuthorizationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,5 +19,13 @@ public class RefreshTokenService {
         refreshTokenRepository.deleteByAccessToken(accessToken);
 
         return refreshTokenRepository.save(new RefreshToken(accessToken));
+    }
+
+    @Transactional
+    public boolean isVerify(String accessToken, String refreshTokenId) {
+        RefreshToken refreshToken = refreshTokenRepository.findById(refreshTokenId)
+            .orElseThrow(() -> new AuthorizationException(String.format("유효하지 않은 refreshToken %s", refreshTokenId)));
+
+        return refreshToken.verify(accessToken);
     }
 }

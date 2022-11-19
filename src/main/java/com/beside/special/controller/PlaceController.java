@@ -1,10 +1,6 @@
 package com.beside.special.controller;
 
-import com.beside.special.domain.Coordinate;
-import com.beside.special.domain.Place;
-import com.beside.special.domain.PlaceRepository;
-import com.beside.special.domain.PlaceType;
-import com.beside.special.domain.RecommendationResponse;
+import com.beside.special.domain.*;
 import com.beside.special.domain.dto.FindPlaceResponse;
 import com.beside.special.domain.dto.UserDto;
 import com.beside.special.service.PlaceService;
@@ -17,11 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;

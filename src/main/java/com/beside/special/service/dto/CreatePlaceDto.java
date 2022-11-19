@@ -24,7 +24,7 @@ public class CreatePlaceDto {
     private String name;
 
     @Schema(description = "이미지(UUID) List", required = true)
-    private List<String> images;
+    private List<String> imageUuids;
 
     @Schema(description = "해시태그 List")
     private List<String> hashTags;

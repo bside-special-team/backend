@@ -1,9 +1,8 @@
 package com.beside.special.service;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.beside.special.domain.AuthProvider;
-import com.beside.special.domain.User;
-import com.beside.special.domain.UserRepository;
+import com.beside.special.domain.*;
+import com.beside.special.domain.dto.UserDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

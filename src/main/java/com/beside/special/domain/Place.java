@@ -22,7 +22,7 @@ public class Place extends BaseEntity {
     @Id
     private String id;
 
-    private User writer;
+    private String writerId;
 
     private PlaceType placeType;
 
@@ -42,14 +42,14 @@ public class Place extends BaseEntity {
 
     private int recommendCount = 0;
 
-    public Place(Coordinate coordinate, String name, User writer,
+    public Place(Coordinate coordinate, String name, String writerId,
                  List<String> imageUuids, List<String> hashTags) {
         // validate(coordinate, name, hashTags);
         // TODO 사진 validation
         this.placeType = PlaceType.HIDDEN;
         this.coordinate = coordinate;
         this.name = name;
-        this.writer = writer;
+        this.writerId = writerId;
         this.imageUuids = imageUuids;
         this.hashTags = hashTags;
         this.visitInfos = new HashSet<>();

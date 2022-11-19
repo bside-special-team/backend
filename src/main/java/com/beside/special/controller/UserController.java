@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,11 @@ public class UserController {
         this.userService = userService;
         this.accessTokenService = accessTokenService;
         this.refreshTokenService = refreshTokenService;
+    }
+
+    @GetMapping("one")
+    public User getUser(@Parameter(hidden = true) @AuthUser UserDto userDto) {
+        return userService.findById(userDto.getUserId());
     }
 
     @Operation(summary = "닉네임 업데이트", responses = {

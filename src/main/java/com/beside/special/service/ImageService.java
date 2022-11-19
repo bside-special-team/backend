@@ -2,17 +2,21 @@ package com.beside.special.service;
 
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.*;
+import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import com.beside.special.domain.Image;
 import com.beside.special.domain.ImageRepository;
-
 import com.beside.special.exception.BadRequestException;
 import com.beside.special.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -40,19 +44,19 @@ public class ImageService {
             String fileKey = targetDirectory + "/" + getImageKey(file);
             try {
                 s3.putObject(new PutObjectRequest(
-                        BUCKET_NAME,
-                        fileKey,
-                        file.getInputStream(),
-                        new ObjectMetadata()));
+                    BUCKET_NAME,
+                    fileKey,
+                    file.getInputStream(),
+                    new ObjectMetadata()));
 
             } catch (SdkClientException | IOException e) {
                 throw new RuntimeException("S3 Upload 중 오류 발생" + e.getMessage());
             }
 
             Image image = Image.builder()
-                    .fileKey(fileKey)
-                    .uuid(String.valueOf(UUID.randomUUID()))
-                    .build();
+                .fileKey(fileKey)
+                .uuid(String.valueOf(UUID.randomUUID()))
+                .build();
 
             imageRepository.save(image);
 
@@ -63,7 +67,7 @@ public class ImageService {
 
     public ByteArrayOutputStream getImage(String uuid) {
         Image image = imageRepository.findByUuid(uuid)
-                .orElseThrow(() -> new NotFoundException("존재하지 않는 파일입니다."));
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 파일입니다."));
 
         S3Object s3Object = s3.getObject(BUCKET_NAME, image.getFileKey());
 
@@ -84,7 +88,7 @@ public class ImageService {
     public void deleteImage(List<String> uuids) {
         for (String uuid : uuids) {
             Image image = imageRepository.findByUuid(uuid)
-                    .orElseThrow(() -> new NotFoundException("존재하지 않는 파일입니다."));
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 파일입니다."));
 
             s3.deleteObject(BUCKET_NAME, image.getFileKey());
         }

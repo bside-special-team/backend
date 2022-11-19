@@ -24,7 +24,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public FilterRegistrationBean filterBean(SpecialJWTConfiguration specialJWTConfiguration, ObjectMapper objectMapper) {
+    public FilterRegistrationBean filterBean(SpecialJWTConfiguration specialJWTConfiguration,
+                                             ObjectMapper objectMapper) {
         FilterRegistrationBean registrationBean =
             new FilterRegistrationBean(new AuthorizationFilter(specialJWTConfiguration, objectMapper));
         registrationBean.addUrlPatterns("/api/*");

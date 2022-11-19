@@ -23,14 +23,14 @@ public class ImageUploadConfig {
     @Bean
     public AmazonS3 amazonS3() {
         AWSCredentials awsCredentials = new BasicAWSCredentials(
-                imageConfigProperties.getAccessKey(), imageConfigProperties.getSecretKey()
+            imageConfigProperties.getAccessKey(), imageConfigProperties.getSecretKey()
         );
 
         return AmazonS3ClientBuilder.standard()
-                .withEndpointConfiguration(
-                        new AwsClientBuilder.EndpointConfiguration(
-                                imageConfigProperties.getEndPoint(), imageConfigProperties.getRegionName()))
-                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
-                .build();
+            .withEndpointConfiguration(
+                new AwsClientBuilder.EndpointConfiguration(
+                    imageConfigProperties.getEndPoint(), imageConfigProperties.getRegionName()))
+            .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
+            .build();
     }
 }

@@ -30,7 +30,7 @@ public enum AuthProvider {
     }
 
     public JwkProvider getProvider() {
-        if(this == GOOGLE) {
+        if (this == GOOGLE) {
             return new JwkProviderBuilder(getUrl())
                 .cached(10, 7, TimeUnit.DAYS)
                 .build();

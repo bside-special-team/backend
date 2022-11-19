@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 // User Entity contains Place ID
 // Place Entity contains User ID
-public class VisitInfo{
+public class VisitInfo {
     private String id;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -21,15 +21,15 @@ public class VisitInfo{
     private LocalDateTime visitedAt;
 
     @Override
-    public boolean equals(Object obj){
-        if(getClass() != obj.getClass()){
+    public boolean equals(Object obj) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        return ( ((VisitInfo) obj).id.equals(this.id));
+        return (((VisitInfo) obj).id.equals(this.id));
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return (id).hashCode();
     }
 }

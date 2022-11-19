@@ -39,7 +39,8 @@ public class UserController {
         @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @PutMapping("update")
-    public TokenResponse update(@Parameter(hidden = true) @AuthUser UserDto userDto, @RequestBody UserUpdateRequest userUpdateRequest) {
+    public TokenResponse update(@Parameter(hidden = true) @AuthUser UserDto userDto,
+                                @RequestBody UserUpdateRequest userUpdateRequest) {
         User user = userService.update(userDto.getUserId(), userUpdateRequest.getNickName());
         String accessToken = accessTokenService.generate(user);
         RefreshToken refreshToken = refreshTokenService.generate(accessToken);

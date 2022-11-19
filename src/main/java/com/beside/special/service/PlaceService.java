@@ -65,7 +65,7 @@ public class PlaceService {
             createPlaceDto.getCoordinate(),
             createPlaceDto.getName(),
             writer.getId(),
-            createPlaceDto.getImages(),
+            createPlaceDto.getImageUuids(),
             createPlaceDto.getHashTags()
         );
 

@@ -11,6 +11,7 @@ import com.beside.special.service.AccessTokenService;
 import com.beside.special.service.RefreshTokenService;
 import com.beside.special.service.UserService;
 import com.beside.special.service.dto.GainPointResponse;
+import com.beside.special.service.dto.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping("one")
-    public GainPointResponse<User> getUser(@Parameter(hidden = true) @AuthUser UserDto userDto) {
+    public GainPointResponse<UserResponse> getUser(@Parameter(hidden = true) @AuthUser UserDto userDto) {
         return userService.findByIdWithAttendance(userDto.getUserId());
     }
 

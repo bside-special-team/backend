@@ -9,6 +9,7 @@ import com.beside.special.domain.User;
 import com.beside.special.domain.UserRepository;
 import com.beside.special.service.dto.GainPointResponse;
 import com.beside.special.service.dto.UserPointResponse;
+import com.beside.special.service.dto.UserResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,12 +40,12 @@ public class UserService {
     }
 
     @Transactional
-    public GainPointResponse<User> findByIdWithAttendance(String id) {
+    public GainPointResponse<UserResponse> findByIdWithAttendance(String id) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException(String.format("not found user %s", id)));
         String targetId = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         UserPointResponse userPointResponse = userPointCalculator.calculatePoint(user, ATTENDANCE, targetId);
-        return new GainPointResponse(user, userPointResponse);
+        return new GainPointResponse(UserResponse.from(user), userPointResponse);
     }
 
     public User findById(String id) {

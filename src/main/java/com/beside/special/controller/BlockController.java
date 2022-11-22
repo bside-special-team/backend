@@ -25,21 +25,21 @@ public class BlockController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<BlockInfo>> get(@AuthUser UserDto user,
+    public ResponseEntity<List<BlockInfo>> get(@Parameter(hidden = true) @AuthUser UserDto user,
                                                @RequestParam BlockType blockType) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(blockService.findBlockInfo(user, blockType));
     }
 
     @PostMapping("/")
-    public ResponseEntity<BlockInfo> insert(@AuthUser UserDto user,
+    public ResponseEntity<BlockInfo> insert(@Parameter(hidden = true) @AuthUser UserDto user,
                                             @RequestBody CreateBlockDto createBlockDto) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(blockService.create(user, createBlockDto));
     }
 
     @DeleteMapping("/")
-    public ResponseEntity<?> delete(@AuthUser UserDto user,
+    public ResponseEntity<?> delete(@Parameter(hidden = true) @AuthUser UserDto user,
                                     @RequestBody CreateBlockDto createBlockDto) {
         blockService.delete(user, createBlockDto);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

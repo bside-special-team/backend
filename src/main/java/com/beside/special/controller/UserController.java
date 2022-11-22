@@ -1,9 +1,10 @@
 package com.beside.special.controller;
 
+import com.beside.special.controller.dto.UserLevelResponse;
 import com.beside.special.domain.AuthUser;
-import com.beside.special.domain.BlockInfo;
 import com.beside.special.domain.RefreshToken;
 import com.beside.special.domain.User;
+import com.beside.special.domain.UserLevel;
 import com.beside.special.domain.dto.TokenResponse;
 import com.beside.special.domain.dto.UserDto;
 import com.beside.special.domain.dto.UserUpdateRequest;
@@ -11,12 +12,16 @@ import com.beside.special.service.AccessTokenService;
 import com.beside.special.service.RefreshTokenService;
 import com.beside.special.service.UserService;
 import com.beside.special.service.dto.GainPointResponse;
-import com.beside.special.service.dto.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Tag(name = "User", description = "유저 관리")
 @RequestMapping("/api/v1/users")
@@ -37,6 +42,14 @@ public class UserController {
     @GetMapping("one")
     public GainPointResponse<User> getUser(@Parameter(hidden = true) @AuthUser UserDto userDto) {
         return userService.findByIdWithAttendance(userDto.getUserId());
+    }
+
+    @GetMapping("levels")
+    public List<UserLevelResponse> userLevels(@Parameter(hidden = true) @AuthUser UserDto userDto) {
+        return Arrays.stream(UserLevel.values())
+            .sorted(Comparator.comparing(UserLevel::getLevel))
+            .map(UserLevelResponse::from)
+            .collect(Collectors.toList());
     }
 
     @Operation(summary = "닉네임 업데이트", responses = {

@@ -10,8 +10,8 @@ import java.util.List;
 @Getter
 public class FindByCoordinatePlaceDto {
     private List<Place> hiddenPlaceList;
-    private List<Place> randMarkList;
+    private List<Place> landMarkList;
 
     private int hiddenPlaceCount;
-    private int randMarkCount;
+    private int landMarkCount;
 }

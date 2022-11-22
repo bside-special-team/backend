@@ -40,12 +40,12 @@ public class UserService {
     }
 
     @Transactional
-    public GainPointResponse<UserResponse> findByIdWithAttendance(String id) {
+    public GainPointResponse<User> findByIdWithAttendance(String id) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException(String.format("not found user %s", id)));
         String targetId = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         UserPointResponse userPointResponse = userPointCalculator.calculatePoint(user, ATTENDANCE, targetId);
-        return new GainPointResponse(UserResponse.from(user), userPointResponse);
+        return new GainPointResponse(user, userPointResponse);
     }
 
     public User findById(String id) {

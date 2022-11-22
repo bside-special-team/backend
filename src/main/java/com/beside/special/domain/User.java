@@ -46,9 +46,14 @@ public class User {
         this.nickName = nickName;
     }
 
+    public String getUserId() {
+        return id;
+    }
+
     public String getLabel() {
         return userLevel.getLabel();
     }
+
     public boolean addPoint(int point) {
         this.point += point;
         UserLevel level = UserLevel.findByPoint(this.point);

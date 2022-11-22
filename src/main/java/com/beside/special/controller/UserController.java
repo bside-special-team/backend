@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping("one")
-    public GainPointResponse<UserResponse> getUser(@Parameter(hidden = true) @AuthUser UserDto userDto) {
+    public GainPointResponse<User> getUser(@Parameter(hidden = true) @AuthUser UserDto userDto) {
         return userService.findByIdWithAttendance(userDto.getUserId());
     }
 

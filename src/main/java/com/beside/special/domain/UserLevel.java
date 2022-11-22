@@ -7,17 +7,19 @@ import java.util.Comparator;
 
 @Getter
 public enum UserLevel {
-    LEVEL_ONE(0, "외지인"),
-    LEVEL_TWO(50, "동네주민"),
-    LEVEL_THREE(1000, "동네이장"),
-    LEVEL_FOUR(3000, "동네군수"),
-    LEVEL_FIVE(6000, "동네통장"),
+    LEVEL_ONE(1, 0, "외지인"),
+    LEVEL_TWO(2, 50, "동네주민"),
+    LEVEL_THREE(3, 1000, "동네이장"),
+    LEVEL_FOUR(4, 3000, "동네군수"),
+    LEVEL_FIVE(5, 6000, "동네통장"),
     ;
 
+    private final int level;
     private final int minimumPoint;
     private final String label;
 
-    UserLevel(int minimumPoint, String label) {
+    UserLevel(int level, int minimumPoint, String label) {
+        this.level = level;
         this.minimumPoint = minimumPoint;
         this.label = label;
     }

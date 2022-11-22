@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Getter
 @Document
-public class User {
+public class User extends BaseEntity {
     private static final int INIT_POINT = 0;
 
     @Id

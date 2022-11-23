@@ -148,14 +148,14 @@ public class PlaceService {
     public FindByCoordinatePlaceDto findByCoordinate(Coordinate from, Coordinate to) {
         List<Place> hiddenPlaceList =
             placeRepository.findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(from, to, PlaceType.HIDDEN);
-        List<Place> randMarkList =
+        List<Place> landMarkList =
                 placeRepository.findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(from, to, PlaceType.LAND_MARK);
 
         return FindByCoordinatePlaceDto.builder()
             .hiddenPlaceList(hiddenPlaceList.subList(0, Math.min((hiddenPlaceList.size()), 30)))
-            .randMarkList(randMarkList.subList(0, Math.min((randMarkList.size()), 10)))
+            .landMarkList(landMarkList.subList(0, Math.min((landMarkList.size()), 10)))
             .hiddenPlaceCount(hiddenPlaceList.size())
-            .randMarkCount(randMarkList.size())
+            .landMarkCount(landMarkList.size())
             .build();
     }
 

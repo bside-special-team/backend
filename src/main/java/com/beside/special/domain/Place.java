@@ -53,6 +53,7 @@ public class Place extends BaseEntity {
         this.imageUuids = imageUuids;
         this.hashTags = hashTags;
         this.visitInfos = new HashSet<>();
+        this.recommendUsers = new HashSet<>();
     }
 
     private static void validate(Category category, Coordinate coordinate, String name, List<String> hashTags) {

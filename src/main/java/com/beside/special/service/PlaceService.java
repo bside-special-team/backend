@@ -14,7 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PlaceService {
@@ -37,7 +40,7 @@ public class PlaceService {
         Place place = placeRepository.findById(updatePlaceDto.getPlaceId())
             .orElseThrow(() -> new NotFoundException("존재하지않는 Place"));
 
-        if (!place.getWriterId().equals(user.getUserId())) {
+        if (!place.getWriter().getId().equals(user.getUserId())) {
             throw new ForbiddenException("수정 권한이 존재하지 않습니다.");
         }
 
@@ -49,7 +52,15 @@ public class PlaceService {
         Place place = placeRepository.findById(placeId)
             .orElseThrow(() -> new NotFoundException("존재하지않는 Place"));
 
-        if (!place.getWriterId().equals(user.getUserId())) {
+        // 지울거
+        User userDto = userRepository.findById(user.getUserId())
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 User"));
+
+        if(place.getWriter().equals(userDto)){
+            System.out.println("equals 테스트");
+        }
+
+        if (!place.getWriter().getId().equals(user.getUserId())) {
             throw new ForbiddenException("삭제 권한이 존재하지 않습니다.");
         }
 
@@ -64,7 +75,7 @@ public class PlaceService {
         Place place = new Place(
             createPlaceDto.getCoordinate(),
             createPlaceDto.getName(),
-            writer.getId(),
+            writer,
             createPlaceDto.getImageUuids(),
             createPlaceDto.getHashTags()
         );
@@ -117,7 +128,7 @@ public class PlaceService {
     }
 
     @Transactional
-    public RecommendationResponse recommend(UserDto user, String placeId) {
+    public Place recommend(UserDto user, String placeId) {
         Place place = placeRepository.findById(placeId)
             .orElseThrow(() -> new NotFoundException("존재하지않는 Place"));
 
@@ -136,11 +147,9 @@ public class PlaceService {
 
         if (place.getPlaceType() == PlaceType.HIDDEN && place.getRecommendUsers().size() >= LAND_MARK_RECOMMENDATION) {
             place.setPlaceType(PlaceType.LAND_MARK);
-            placeRepository.save(place);
-            return RecommendationResponse.UPGRADE;
+            return placeRepository.save(place);
         } else {
-            placeRepository.save(place);
-            return RecommendationResponse.SUCCESS;
+            return placeRepository.save(place);
         }
     }
 
@@ -162,5 +171,21 @@ public class PlaceService {
     public Place findById(String placeId) {
         return placeRepository.findById(placeId)
             .orElseThrow(() -> new NotFoundException(String.format("존재하지않는 Place [%s]", placeId)));
+    }
+
+    public List<Place> recentVisited(UserDto user) {
+        User visitor = userRepository.findById(user.getUserId())
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 User"));
+
+        List<VisitInfo> visitInfos = visitor.getVisitInfos().stream()
+                .sorted(Comparator.comparing(VisitInfo::getVisitedAt).reversed())
+                .limit(5)
+                .collect(Collectors.toList());
+
+        List<Place> places = new ArrayList<>();
+        for (VisitInfo v : visitInfos) {
+            placeRepository.findById(v.getId()).ifPresent(places::add);
+        }
+        return places;
     }
 }

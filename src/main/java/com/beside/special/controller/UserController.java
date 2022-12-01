@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -64,4 +65,6 @@ public class UserController {
         RefreshToken refreshToken = refreshTokenService.generate(accessToken);
         return new TokenResponse(accessToken, refreshToken.getId());
     }
+
+
 }

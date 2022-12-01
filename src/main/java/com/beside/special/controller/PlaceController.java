@@ -119,16 +119,27 @@ public class PlaceController {
             description =
                     "SUCCESS : 정상 추천 수 증가 완료\n" + "UPGRADE : 히든 플레이스 -> 랜드마크 승급 (해당 추천으로 인해)",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "추천 완료 SUCCESS | UPGRADE"),
+                    @ApiResponse(responseCode = "200", description = "추천 완료"),
                     @ApiResponse(responseCode = "400", description = "추천 내역이 존재하는 Place"),
                     @ApiResponse(responseCode = "404", description = "존재하지 않는 ( User | Place ) 정보"),
                     @ApiResponse(responseCode = "500", description = "서버 에러")
             })
 
     @PostMapping("/recommendation")
-    public ResponseEntity<RecommendationResponse> likePlace(@RequestParam String placeId,
+    public ResponseEntity<Place> likePlace(@RequestParam String placeId,
                                                             @Parameter(hidden = true) @AuthUser UserDto user) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(placeService.recommend(user, placeId));
+    }
+
+    @Operation(summary = "내 방문 Place 조회", responses = {
+            @ApiResponse(responseCode = "200", description = ""),
+            @ApiResponse(responseCode = "404", description = ""),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    @GetMapping("/recent-visited")
+    public ResponseEntity<List<Place> > recentlyVisitedPlace(@Parameter(hidden = true) @AuthUser UserDto user) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(placeService.recentVisited(user));
     }
 }

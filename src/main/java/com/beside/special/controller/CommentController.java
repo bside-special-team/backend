@@ -4,23 +4,14 @@ import com.beside.special.domain.AuthUser;
 import com.beside.special.domain.Comment;
 import com.beside.special.domain.dto.UserDto;
 import com.beside.special.service.CommentService;
-import com.beside.special.service.dto.CommentResponse;
-import com.beside.special.service.dto.CommentResponses;
-import com.beside.special.service.dto.CreateCommentRequest;
-import com.beside.special.service.dto.GainPointResponse;
+import com.beside.special.service.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.Instant;
@@ -46,8 +37,8 @@ public class CommentController {
         LocalDateTime datetime = getDatetime(lastTimestamp);
         List<Comment> comments = commentService.findByPlaceIdAndDateTime(placeId, datetime, limit);
         List<CommentResponse> commentResponses = comments.stream()
-            .map(CommentResponse::from)
-            .collect(Collectors.toList());
+                .map(CommentResponse::from)
+                .collect(Collectors.toList());
         return CommentResponses.from(commentResponses, limit);
     }
 
@@ -59,8 +50,8 @@ public class CommentController {
     }
 
     @Operation(summary = "코멘트 등록", responses = {
-        @ApiResponse(responseCode = "201", description = "조회 성공"),
-        @ApiResponse(responseCode = "500", description = "서버 에러")
+            @ApiResponse(responseCode = "201", description = "등록 성공"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @PostMapping
     public ResponseEntity<GainPointResponse<CommentResponse>> register(@Parameter(hidden = true) @AuthUser UserDto userDto,
@@ -68,7 +59,33 @@ public class CommentController {
         GainPointResponse<Comment> gainPointResponse = commentService.create(userDto.getUserId(), request);
         CommentResponse commentResponse = CommentResponse.from(gainPointResponse.getResponse());
         return ResponseEntity.status(HttpStatus.CREATED).body(
-            new GainPointResponse(commentResponse, gainPointResponse.getPointResult())
+                new GainPointResponse(commentResponse, gainPointResponse.getPointResult())
         );
+    }
+
+    @Operation(summary = "코멘트 수정", responses = {
+            @ApiResponse(responseCode = "200", description = "수정 성공"),
+            @ApiResponse(responseCode = "403", description = "Comment 작성자 아님"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 Comment"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    @PatchMapping
+    public ResponseEntity<Comment> update(@Parameter(hidden = true) @AuthUser UserDto userDto,
+                                          @Valid @RequestBody UpdateCommentRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                commentService.update(userDto.getUserId(), request));
+    }
+
+    @Operation(summary = "코멘트 삭제", responses = {
+            @ApiResponse(responseCode = "204", description = "삭제 성공"),
+            @ApiResponse(responseCode = "403", description = "Comment 작성자 아님"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 Comment"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    @DeleteMapping
+    public ResponseEntity<?> delete(@Parameter(hidden = true) @AuthUser UserDto userDto,
+                                    @Valid @RequestBody String commentId) {
+        commentService.delete(userDto.getUserId(), commentId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

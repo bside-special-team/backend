@@ -10,4 +10,6 @@ public interface PlaceRepository extends MongoRepository<Place, String> {
     List<Place> findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(Coordinate from, Coordinate to, PlaceType placeType);
 
     List<Place> findAllByPlaceType(PlaceType placeType);
+
+    List<Place> findAllByWriterOrderByCreatedAtDesc(User user);
 }

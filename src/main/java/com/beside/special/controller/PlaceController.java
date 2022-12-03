@@ -33,8 +33,8 @@ public class PlaceController {
     }
 
     @Operation(summary = "플레이스 전체 조회", responses = {
-        @ApiResponse(responseCode = "200", description = "조회 성공"),
-        @ApiResponse(responseCode = "500", description = "서버 에러")
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @GetMapping
     public FindPlaceResponse findAll() {
@@ -86,8 +86,8 @@ public class PlaceController {
     }
 
     @Operation(summary = "좌표 기반 플레이스 조회", responses = {
-        @ApiResponse(responseCode = "200", description = "조회 성공"),
-        @ApiResponse(responseCode = "500", description = "서버 에러")
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @GetMapping("/coordinate")
     public ResponseEntity<FindByCoordinatePlaceDto> findByCoordinate(
@@ -103,10 +103,10 @@ public class PlaceController {
     }
 
     @Operation(summary = "플레이스 방문", responses = {
-        @ApiResponse(responseCode = "201", description = "등록 성공"),
-        @ApiResponse(responseCode = "400", description = "방문 내역이 존재하는 Place"),
-        @ApiResponse(responseCode = "404", description = "존재하지 않는 ( User | Place ) 정보"),
-        @ApiResponse(responseCode = "500", description = "서버 에러")
+            @ApiResponse(responseCode = "201", description = "등록 성공"),
+            @ApiResponse(responseCode = "400", description = "방문 내역이 존재하는 Place"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 ( User | Place ) 정보"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @PostMapping("/check-in")
     public ResponseEntity<GainPointResponse<Place>> visitPlace(@RequestParam String placeId,
@@ -127,19 +127,42 @@ public class PlaceController {
 
     @PostMapping("/recommendation")
     public ResponseEntity<Place> likePlace(@RequestParam String placeId,
-                                                            @Parameter(hidden = true) @AuthUser UserDto user) {
+                                           @Parameter(hidden = true) @AuthUser UserDto user) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(placeService.recommend(user, placeId));
     }
 
+    @Operation(summary = "내 추천 Place 조회", responses = {
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 User"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    @GetMapping("/recommendation")
+    public ResponseEntity<List<Place>> recommendedByMe(@Parameter(hidden = true) @AuthUser UserDto user) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(placeService.recommendByMe(user));
+    }
+
     @Operation(summary = "내 방문 Place 조회", responses = {
-            @ApiResponse(responseCode = "200", description = ""),
-            @ApiResponse(responseCode = "404", description = ""),
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 User"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @GetMapping("/recent-visited")
-    public ResponseEntity<List<Place> > recentlyVisitedPlace(@Parameter(hidden = true) @AuthUser UserDto user) {
+    public ResponseEntity<List<Place>> recentlyVisitedPlace(@Parameter(hidden = true) @AuthUser UserDto user) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(placeService.recentVisited(user));
     }
+
+    @Operation(summary = "내 작성 Place 조회", responses = {
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 User"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    @GetMapping("/myPlace")
+    public ResponseEntity<List<Place>> writtenByMe(@Parameter(hidden = true) @AuthUser UserDto user) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(placeService.writtenByMe(user));
+    }
+
 }

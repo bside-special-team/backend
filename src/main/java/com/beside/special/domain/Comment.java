@@ -1,6 +1,5 @@
 package com.beside.special.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -22,5 +21,9 @@ public class Comment extends BaseEntity {
         this.comment = comment;
         this.user = user;
         this.place = place;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

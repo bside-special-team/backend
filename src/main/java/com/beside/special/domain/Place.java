@@ -42,7 +42,7 @@ public class Place extends BaseEntity {
 
     private int recommendCount = 0;
 
-    public Place(Coordinate coordinate, String name, User writerId,
+    public Place(Coordinate coordinate, String name, User writer,
                  List<String> imageUuids, List<String> hashTags) {
         // validate(coordinate, name, hashTags);
         // TODO 사진 validation

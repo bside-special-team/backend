@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 public class CreateBlockDto {
     private String targetId;
     private BlockType type;
+    private String blockReason;
 }

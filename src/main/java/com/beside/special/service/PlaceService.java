@@ -22,17 +22,20 @@ import java.util.stream.Collectors;
 @Service
 public class PlaceService {
     private static final int LAND_MARK_RECOMMENDATION = 2;
+    private static final int BLOCK_COUNT = 3;
 
     private final PlaceRepository placeRepository;
     private final UserRepository userRepository;
-
     private final UserPointCalculator userPointCalculator;
+    private final BlockRepository blockRepository;
+
 
     public PlaceService(PlaceRepository placeRepository, UserRepository userRepository,
-                        UserPointCalculator userPointCalculator) {
+                        UserPointCalculator userPointCalculator, BlockRepository blockRepository) {
         this.placeRepository = placeRepository;
         this.userRepository = userRepository;
         this.userPointCalculator = userPointCalculator;
+        this.blockRepository = blockRepository;
     }
 
     @Transactional
@@ -153,16 +156,23 @@ public class PlaceService {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public FindByCoordinatePlaceDto findByCoordinate(Coordinate from, Coordinate to) {
-        List<Place> hiddenPlaceList =
-                placeRepository.findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(from, to, PlaceType.HIDDEN);
-        List<Place> landMarkList =
-                placeRepository.findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(from, to, PlaceType.LAND_MARK);
+        List<Place> landMarkList = placeRepository.findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(from, to, PlaceType.LAND_MARK)
+                .stream()
+                .filter(place -> blockRepository.findAllByTargetId(place.getId()).size() >= BLOCK_COUNT)
+                .limit(30)
+                .collect(Collectors.toList());
+
+        List<Place> hiddenPlaceList = placeRepository.findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(from, to, PlaceType.HIDDEN)
+                .stream()
+                .filter(place -> blockRepository.findAllByTargetId(place.getId()).size() >= BLOCK_COUNT)
+                .limit(10)
+                .collect(Collectors.toList());
 
         return FindByCoordinatePlaceDto.builder()
-                .hiddenPlaceList(hiddenPlaceList.subList(0, Math.min((hiddenPlaceList.size()), 30)))
-                .landMarkList(landMarkList.subList(0, Math.min((landMarkList.size()), 10)))
+                .hiddenPlaceList(hiddenPlaceList)
+                .landMarkList(landMarkList)
                 .hiddenPlaceCount(hiddenPlaceList.size())
                 .landMarkCount(landMarkList.size())
                 .build();

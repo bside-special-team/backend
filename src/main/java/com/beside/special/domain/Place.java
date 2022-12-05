@@ -42,6 +42,10 @@ public class Place extends BaseEntity {
 
     private int recommendCount = 0;
 
+    private int reportCount = 0;
+
+    private boolean report = false;
+
     public Place(Coordinate coordinate, String name, User writer,
                  List<String> imageUuids, List<String> hashTags) {
         // validate(coordinate, name, hashTags);

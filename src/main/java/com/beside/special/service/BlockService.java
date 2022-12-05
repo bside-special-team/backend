@@ -27,7 +27,7 @@ public class BlockService {
         User from = userRepository.findById(user.getUserId())
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 User"));
 
-        blockRepository.findByUserIdAndType(from.getId(), createBlockDto.getType())
+        blockRepository.findAllByUserIdAndType(from.getId(), createBlockDto.getType())
                 .stream().filter(blockInfo -> blockInfo.getTargetId().equals(createBlockDto.getTargetId()))
                 .findFirst()
                 .ifPresent(
@@ -70,7 +70,6 @@ public class BlockService {
     }
 
     public List<BlockInfo> findBlockInfo(UserDto user, BlockType blockType) {
-        return blockRepository.findByUserIdAndType(user.getUserId(), blockType);
+        return blockRepository.findAllByUserIdAndType(user.getUserId(), blockType);
     }
-
 }

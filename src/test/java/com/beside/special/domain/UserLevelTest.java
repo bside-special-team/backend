@@ -15,10 +15,10 @@ class UserLevelTest {
         "999,동네주민",
         "1000,동네이장",
         "2999,동네이장",
-        "3000,동네군수",
-        "5999,동네군수",
-        "6000,동네통장",
-        "7000,동네통장",
+        "3000,동네통장",
+        "5999,동네통장",
+        "6000,동네군수",
+        "7000,동네군수",
     })
     void 포인트에_맞는_레벨을_리턴한다(int point, String label) {
         UserLevel userLevel = UserLevel.findByPoint(point);

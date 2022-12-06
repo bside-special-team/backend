@@ -10,8 +10,8 @@ public enum UserLevel {
     LEVEL_ONE(1, 0, "외지인"),
     LEVEL_TWO(2, 50, "동네주민"),
     LEVEL_THREE(3, 1000, "동네이장"),
-    LEVEL_FOUR(4, 3000, "동네군수"),
-    LEVEL_FIVE(5, 6000, "동네통장"),
+    LEVEL_FOUR(4, 3000, "동네통장"),
+    LEVEL_FIVE(5, 6000, "동네군수"),
     ;
 
     private final int level;

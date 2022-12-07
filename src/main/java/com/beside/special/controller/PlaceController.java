@@ -17,6 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @Tag(name = "Place", description = "플레이스(명소)")
@@ -160,9 +163,17 @@ public class PlaceController {
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @GetMapping("/myPlace")
-    public ResponseEntity<List<Place>> writtenByMe(@Parameter(hidden = true) @AuthUser UserDto user) {
+    public ResponseEntity<List<Place>> writtenByMe(@Parameter(hidden = true) @AuthUser UserDto user,
+                                                   @RequestParam(required = false) Long lastTimestamp,
+                                                   int limit) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(placeService.writtenByMe(user));
+                .body(placeService.writtenByMe(user, getDatetime(lastTimestamp), limit));
     }
 
+    private LocalDateTime getDatetime(Long lastTimestamp) {
+        if (lastTimestamp != null) {
+            return Instant.ofEpochMilli(lastTimestamp).atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+        }
+        return LocalDateTime.now();
+    }
 }

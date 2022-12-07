@@ -10,6 +10,8 @@ import com.beside.special.service.dto.FindByCoordinatePlaceDto;
 import com.beside.special.service.dto.GainPointResponse;
 import com.beside.special.service.dto.UpdatePlaceDto;
 import com.beside.special.service.dto.UserPointResponse;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -199,11 +201,11 @@ public class PlaceService {
         return places;
     }
 
-    public List<Place> writtenByMe(UserDto user) {
+    public List<Place> writtenByMe(UserDto user, LocalDateTime lastCreateAt, int limit) {
         User writer = userRepository.findById(user.getUserId())
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 User"));
-
-        return placeRepository.findAllByWriterOrderByCreatedAtDesc(writer);
+        Pageable page = PageRequest.of(0,limit);
+        return placeRepository.findByWriter_IdAndCreatedAtBeforeOrderByCreatedAtDesc(writer.getId(), lastCreateAt, page);
     }
 
     public List<Place> recommendByMe(UserDto user) {

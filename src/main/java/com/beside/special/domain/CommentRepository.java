@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface CommentRepository extends MongoRepository<Comment, String> {
     List<Comment> findByPlace_IdAndAndCreatedAtAfterOrderByCreatedAt(String placeId, LocalDateTime createAt, Pageable pageable);
+    List<Comment> findByUser_IdAndAndCreatedAtAfterOrderByCreatedAt(String placeId, LocalDateTime createAt, Pageable pageable);
 }

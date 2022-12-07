@@ -162,13 +162,13 @@ public class PlaceService {
     public FindByCoordinatePlaceDto findByCoordinate(Coordinate from, Coordinate to) {
         List<Place> landMarkList = placeRepository.findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(from, to, PlaceType.LAND_MARK)
                 .stream()
-                .filter(place -> blockRepository.findAllByTargetId(place.getId()).size() >= BLOCK_COUNT)
+                .filter(place -> blockRepository.findAllByTargetId(place.getId()).size() < BLOCK_COUNT)
                 .limit(30)
                 .collect(Collectors.toList());
 
         List<Place> hiddenPlaceList = placeRepository.findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(from, to, PlaceType.HIDDEN)
                 .stream()
-                .filter(place -> blockRepository.findAllByTargetId(place.getId()).size() >= BLOCK_COUNT)
+                .filter(place -> blockRepository.findAllByTargetId(place.getId()).size() < BLOCK_COUNT)
                 .limit(10)
                 .collect(Collectors.toList());
 
@@ -204,7 +204,7 @@ public class PlaceService {
     public List<Place> writtenByMe(UserDto user, LocalDateTime lastCreateAt, int limit) {
         User writer = userRepository.findById(user.getUserId())
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 User"));
-        Pageable page = PageRequest.of(0,limit);
+        Pageable page = PageRequest.of(0, limit);
         return placeRepository.findByWriter_IdAndCreatedAtBeforeOrderByCreatedAtDesc(writer.getId(), lastCreateAt, page);
     }
 

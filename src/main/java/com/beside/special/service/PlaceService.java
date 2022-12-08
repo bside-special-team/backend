@@ -191,11 +191,14 @@ public class PlaceService {
                 .limit(30)
                 .collect(Collectors.toList());
 
+        int landMarkCount = placeRepository.findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(from, to, PlaceType.LAND_MARK).size();
+        int hiddenPlaceCount = placeRepository.findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(from, to, PlaceType.HIDDEN).size();
+
         return FindByCoordinatePlaceDto.builder()
                 .hiddenPlaceList(hiddenPlaceList)
                 .landMarkList(landMarkList)
-                .hiddenPlaceCount(hiddenPlaceList.size())
-                .landMarkCount(landMarkList.size())
+                .hiddenPlaceCount(hiddenPlaceCount)
+                .landMarkCount(landMarkCount)
                 .build();
     }
 

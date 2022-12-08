@@ -135,6 +135,22 @@ public class PlaceController {
                 .body(placeService.recommend(user, placeId));
     }
 
+    @Operation(summary = "플레이스 추천 취소",
+            description =
+                    "플레이스 추천 취소",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "추천 취소 완료"),
+                    @ApiResponse(responseCode = "400", description = "추천 내역이 존재하지 않는 Place"),
+                    @ApiResponse(responseCode = "404", description = "존재하지 않는 ( User | Place ) 정보"),
+                    @ApiResponse(responseCode = "500", description = "서버 에러")
+            })
+    @DeleteMapping("/recommendation")
+    public ResponseEntity<?> likePlaceUndo(@RequestParam String placeId,
+                                           @Parameter(hidden = true) @AuthUser UserDto user) {
+        placeService.recommendUndo(user, placeId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     @Operation(summary = "내 추천 Place 조회", responses = {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 User"),

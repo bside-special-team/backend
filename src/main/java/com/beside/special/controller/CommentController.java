@@ -82,9 +82,9 @@ public class CommentController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 Comment"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    @DeleteMapping
+    @DeleteMapping("/{commentId}")
     public ResponseEntity<?> delete(@Parameter(hidden = true) @AuthUser UserDto userDto,
-                                    @Valid @RequestBody String commentId) {
+                                    @PathVariable String commentId) {
         commentService.delete(userDto.getUserId(), commentId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

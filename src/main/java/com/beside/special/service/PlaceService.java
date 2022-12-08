@@ -158,6 +158,25 @@ public class PlaceService {
         }
     }
 
+    @Transactional
+    public void recommendUndo(UserDto user, String placeId) {
+        Place place = placeRepository.findById(placeId)
+                .orElseThrow(() -> new NotFoundException("존재하지않는 Place"));
+
+        User recommender = userRepository.findById(user.getUserId())
+                .orElseThrow(() -> new NotFoundException("존재하지않는 User"));
+
+        if (!recommender.getRecPlaces().contains(place.getId())) {
+            throw new BadRequestException("추천하지않은 장소입니다.");
+        }
+
+        place.getRecommendUsers().remove(recommender.getId());
+        recommender.getRecPlaces().remove(place.getId());
+
+        placeRepository.save(place);
+        userRepository.save(recommender);
+    }
+
     @Transactional(readOnly = true)
     public FindByCoordinatePlaceDto findByCoordinate(Coordinate from, Coordinate to) {
         List<Place> landMarkList = placeRepository.findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(from, to, PlaceType.LAND_MARK)

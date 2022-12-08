@@ -179,6 +179,9 @@ public class PlaceService {
 
     @Transactional(readOnly = true)
     public FindByCoordinatePlaceDto findByCoordinate(Coordinate from, Coordinate to) {
+        int landMarkCount = placeRepository.findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(from, to, PlaceType.LAND_MARK).size();
+        int hiddenPlaceCount = placeRepository.findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(from, to, PlaceType.HIDDEN).size();
+
         List<Place> landMarkList = placeRepository.findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(from, to, PlaceType.LAND_MARK)
                 .stream()
                 .filter(place -> blockRepository.findAllByTargetId(place.getId()).size() < BLOCK_COUNT)
@@ -190,9 +193,6 @@ public class PlaceService {
                 .filter(place -> blockRepository.findAllByTargetId(place.getId()).size() < BLOCK_COUNT)
                 .limit(30)
                 .collect(Collectors.toList());
-
-        int landMarkCount = placeRepository.findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(from, to, PlaceType.LAND_MARK).size();
-        int hiddenPlaceCount = placeRepository.findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(from, to, PlaceType.HIDDEN).size();
 
         return FindByCoordinatePlaceDto.builder()
                 .hiddenPlaceList(hiddenPlaceList)

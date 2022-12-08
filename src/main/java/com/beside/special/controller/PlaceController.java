@@ -4,10 +4,7 @@ import com.beside.special.domain.*;
 import com.beside.special.domain.dto.FindPlaceResponse;
 import com.beside.special.domain.dto.UserDto;
 import com.beside.special.service.PlaceService;
-import com.beside.special.service.dto.CreatePlaceDto;
-import com.beside.special.service.dto.FindByCoordinatePlaceDto;
-import com.beside.special.service.dto.GainPointResponse;
-import com.beside.special.service.dto.UpdatePlaceDto;
+import com.beside.special.service.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -179,11 +176,12 @@ public class PlaceController {
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @GetMapping("/myPlace")
-    public ResponseEntity<List<Place>> writtenByMe(@Parameter(hidden = true) @AuthUser UserDto user,
-                                                   @RequestParam(required = false) Long lastTimestamp,
-                                                   int limit) {
+    public ResponseEntity<PlaceResponses> writtenByMe(@Parameter(hidden = true) @AuthUser UserDto user,
+                                                      @RequestParam(required = false) Long lastTimestamp,
+                                                      int limit) {
+        List<Place> places = placeService.writtenByMe(user, getDatetime(lastTimestamp), limit);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(placeService.writtenByMe(user, getDatetime(lastTimestamp), limit));
+                .body(PlaceResponses.from(places, limit));
     }
 
     private LocalDateTime getDatetime(Long lastTimestamp) {

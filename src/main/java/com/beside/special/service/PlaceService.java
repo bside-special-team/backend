@@ -182,13 +182,13 @@ public class PlaceService {
         List<Place> landMarkList = placeRepository.findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(from, to, PlaceType.LAND_MARK)
                 .stream()
                 .filter(place -> blockRepository.findAllByTargetId(place.getId()).size() < BLOCK_COUNT)
-                .limit(30)
+                .limit(10)
                 .collect(Collectors.toList());
 
         List<Place> hiddenPlaceList = placeRepository.findByCoordinateBetweenAndPlaceTypeOrderByRecommendCountDesc(from, to, PlaceType.HIDDEN)
                 .stream()
                 .filter(place -> blockRepository.findAllByTargetId(place.getId()).size() < BLOCK_COUNT)
-                .limit(10)
+                .limit(30)
                 .collect(Collectors.toList());
 
         return FindByCoordinatePlaceDto.builder()
